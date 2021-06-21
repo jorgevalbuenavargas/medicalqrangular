@@ -1,0 +1,13 @@
+.container {
+    padding: 20px 20px;
+  }
+
+  td {
+    padding: 2px;
+    vertical-align: middle;
+  }
+
+  button {
+      margin: 2px;
+  }
+  

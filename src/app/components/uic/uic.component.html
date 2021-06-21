@@ -1,0 +1,85 @@
+<div class="container" *ngIf="loggedProfile !== 'Doctor'">
+    <p>No tienes autorización para acceder a este recurso</p>
+</div>
+
+<div class="container" *ngIf="loggedProfile == 'Doctor'">
+    <div class="container">
+        <div class="container">
+            <div class='row justify-content-end'>
+                <div class="col-12">
+                    <button class="btn btn-primary" (click)="saveNewUIC()">Agregar nuevo</button>
+                    <button class="btn btn-secondary" (click)="getUICByDoctorId('Pendiente')">Pendientes</button>
+                    <button class="btn btn-success" (click)="getUICByDoctorId('Activo')">Habilitados</button>
+                    <button class="btn btn-warning" (click)="getUICByDoctorId('Inactivo')">Deshabilitados</button>
+                </div>
+            </div>
+        </div>    
+
+        <!--<div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Estado</th>
+                                <th>Fecha de creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let obtainedUniqueIdentifierCodeByDoctor of obtainedUniqueIdentifierCodesByDoctor; let i = index">
+                                <td><qrcode [qrdata]="obtainedUniqueIdentifierCodeByDoctor.id!" [scale]="2" [width]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
+                                <td>{{ obtainedUniqueIdentifierCodeByDoctor.status }}</td>
+                                <td>{{ obtainedUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy HH:mm" }}</td>
+                                <td>
+                                    <button *ngIf="obtainedUniqueIdentifierCodeByDoctor.status !== 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(obtainedUniqueIdentifierCodeByDoctor.id!, 'Activo', obtainedUniqueIdentifierCodeByDoctor.creationDate!, obtainedUniqueIdentifierCodeByDoctor.doctorId!)">Habilitar</button>
+                                    <button *ngIf="obtainedUniqueIdentifierCodeByDoctor.status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(obtainedUniqueIdentifierCodeByDoctor.id!, 'Inactivo', obtainedUniqueIdentifierCodeByDoctor.creationDate!, obtainedUniqueIdentifierCodeByDoctor.doctorId!)">Deshabilitar</button>
+                                    <button type="button" class="btn btn-danger" (click)="onDeleteUIC(obtainedUniqueIdentifierCodeByDoctor.id!)">Eliminar</button>
+                                    <button type="button" class="btn btn-primary" (click)="onDeleteUIC(obtainedUniqueIdentifierCodeByDoctor.id!)">Enviar Email</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>-->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Estado</th>
+                                <th>Fecha de creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let filteredUniqueIdentifierCodeByDoctor of filteredUniqueIdentifierCodesByDoctor; let i = index">
+                                <!--<td>{{ obtainedUniqueIdentifierCodeByDoctor.id }}</td>-->
+                                <td><qrcode [qrdata]="filteredUniqueIdentifierCodeByDoctor.id!" [scale]="2" [width]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.status }}</td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy HH:mm" }}</td>
+                                <td>
+                                    <button *ngIf="filteredUniqueIdentifierCodeByDoctor.status !== 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(filteredUniqueIdentifierCodeByDoctor.id!, 'Activo', filteredUniqueIdentifierCodeByDoctor.creationDate!, filteredUniqueIdentifierCodeByDoctor.doctorId!, 'Activo')"><i-bs name="eye-fill"></i-bs></button>
+                                    <button *ngIf="filteredUniqueIdentifierCodeByDoctor.status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(filteredUniqueIdentifierCodeByDoctor.id!, 'Inactivo', filteredUniqueIdentifierCodeByDoctor.creationDate!, filteredUniqueIdentifierCodeByDoctor.doctorId!, 'Inactivo')"><i-bs name="eye-slash-fill"></i-bs></button>
+                                    <button type="button" class="btn btn-danger" (click)="onDeleteUIC(filteredUniqueIdentifierCodeByDoctor.id!, filteredUniqueIdentifierCodeByDoctor.status!)"><i-bs name="trash-fill"></i-bs></button>
+                                    <button type="button" class="btn btn-primary" (click)="sendUICByEmail(filteredUniqueIdentifierCodeByDoctor.id!)" ><i-bs name="envelope-fill"></i-bs></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+
+
+
+
+
+

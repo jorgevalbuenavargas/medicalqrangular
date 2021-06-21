@@ -1,0 +1,67 @@
+<!--<p>doctor-uic works!</p>
+<p> {{ obtainedUniqueIdentifierCodeByID | json  }} </p>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Estado</th>
+                <th>Fecha de creación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let obtainedUniqueIdentifierCode of obtainedUniqueIdentifierCodes; let i = index">
+                <td>{{ obtainedUniqueIdentifierCode.id }}</td>
+                <td>{{ obtainedUniqueIdentifierCode.status }}</td>
+                <td>{{ obtainedUniqueIdentifierCode.creationDate }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Estado</th>
+                <th>Fecha de creación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ obtainedUniqueIdentifierCodeByID.id }}</td>
+                <td>{{ obtainedUniqueIdentifierCodeByID.status }}</td>
+                <td>{{ obtainedUniqueIdentifierCodeByID.creationDate }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+-->
+
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Estado</th>
+                <th>Fecha de creación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let obtainedUniqueIdentifierCodeByDoctor of obtainedUniqueIdentifierCodesByDoctor; let i = index">
+                <td>{{ obtainedUniqueIdentifierCodeByDoctor.id }}</td>
+                <td>{{ obtainedUniqueIdentifierCodeByDoctor.status }}</td>
+                <td>{{ obtainedUniqueIdentifierCodeByDoctor.creationDate }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<div class='container-btn'>
+    <button class="btn btn-success" (click)="saveNewUIC()">Add new</button>
+    <button class="btn btn-success" (click)="onUpdateUIC('64710F70-36D5-E301-FEBE-EF0D48703892', 'Pez', '2020-11-09 23:17:56.807', 'EC1A7830-F706-45E8-BBCF-4440CD33E2EB')">Update</button>
+    <button class="btn btn-danger" (click)="onDeleteUIC('64710F70-36D5-E301-FEBE-EF0D48703892')">Delete</button>
+</div>
