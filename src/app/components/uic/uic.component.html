@@ -1,5 +1,7 @@
 <div class="container" *ngIf="loggedProfile !== 'Doctor'">
-    <p>No tienes autorización para acceder a este recurso</p>
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
 </div>
 
 <div class="container" *ngIf="loggedProfile == 'Doctor'">
@@ -11,6 +13,7 @@
                     <button class="btn btn-secondary" (click)="getUICByDoctorId('Pendiente')">Pendientes</button>
                     <button class="btn btn-success" (click)="getUICByDoctorId('Activo')">Habilitados</button>
                     <button class="btn btn-warning" (click)="getUICByDoctorId('Inactivo')">Deshabilitados</button>
+                    <button class="btn btn-danger" (click)="exportexcel()">Descargar XLSX</button>
                 </div>
             </div>
         </div>    
@@ -48,9 +51,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="excel-table">
                         <thead>
                             <tr>
+                                <th>Código QR</th>
                                 <th>Id</th>
                                 <th>Estado</th>
                                 <th>Fecha de creación</th>
@@ -58,9 +62,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let filteredUniqueIdentifierCodeByDoctor of filteredUniqueIdentifierCodesByDoctor; let i = index">
-                                <!--<td>{{ obtainedUniqueIdentifierCodeByDoctor.id }}</td>-->
+                            <tr *ngFor="let filteredUniqueIdentifierCodeByDoctor of filteredUniqueIdentifierCodesByDoctor; let i = index">                                
                                 <td><qrcode [qrdata]="filteredUniqueIdentifierCodeByDoctor.id!" [scale]="2" [width]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.id }}</td>
                                 <td>{{ filteredUniqueIdentifierCodeByDoctor.status }}</td>
                                 <td>{{ filteredUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy HH:mm" }}</td>
                                 <td>

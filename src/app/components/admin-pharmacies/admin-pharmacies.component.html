@@ -1,0 +1,51 @@
+<div class="container" *ngIf="loggedProfile !== 'Admin'">
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
+</div>
+
+<div class="container" *ngIf="loggedProfile == 'Admin'">
+    <div class="container p-4">
+        <div class='row justify-content-end'>
+            <div class="col-12">
+                <button class="btn btn-success m-2" (click)="getPharmacies('Activo')">Habilitados</button>
+                <button class="btn btn-warning m-2" (click)="getPharmacies('Inactivo')">Deshabilitados</button>
+                <button class="btn btn-secondary m-2" (click)="exportexcel()">Descargar XLSX</button>
+            </div>
+        </div>
+    </div> 
+    <div class="container m-2">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped" id="excel-table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Nombre de fantasia</th>
+                            <th>CUIT</th>
+                            <th>Email</th>
+                            <th>Estado</th>   
+                            <th>Acciones</th>                         
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let obtainedPharmacy of filteredobtainedPharmacies; let i = index">                        
+                            
+                            <td>{{ obtainedPharmacy.id }}</td>
+                            <td>{{ obtainedPharmacy.company_name }}</td>
+                            <td>{{ obtainedPharmacy.business_name }}</td>
+                            <td>{{ obtainedPharmacy.cuit }}</td>
+                            <td>{{ obtainedPharmacy.email }}</td>
+                            <td>{{ obtainedPharmacy.Status }}</td>
+                            <td>
+                                <button *ngIf="obtainedPharmacy.Status == 'Inactivo'" type="button" class="btn btn-warning" (click)="onUpdatePharmacy(obtainedPharmacy.id!, 'Activo',obtainedPharmacy.cuit!, obtainedPharmacy.company_name!, obtainedPharmacy.business_name!, obtainedPharmacy.email!)"><i-bs name="eye-fill"></i-bs></button>
+                                <button *ngIf="obtainedPharmacy.Status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdatePharmacy(obtainedPharmacy.id!, 'Inactivo', obtainedPharmacy.cuit!, obtainedPharmacy.company_name!, obtainedPharmacy.business_name!, obtainedPharmacy.email!)"><i-bs name="eye-slash-fill"></i-bs></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> 
+</div>

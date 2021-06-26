@@ -1,0 +1,51 @@
+<div class="container" *ngIf="loggedProfile !== 'Admin'">
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
+</div>
+
+<div class="container" *ngIf="loggedProfile == 'Admin'">
+    <div class="container p-4">
+        <div class='row justify-content-end'>
+            <div class="col-12">
+                <button class="btn btn-success m-2" (click)="getDoctors('Activo')">Habilitados</button>
+                <button class="btn btn-warning m-2" (click)="getDoctors('Inactivo')">Deshabilitados</button>
+                <button class="btn btn-secondary m-2" (click)="exportexcel()">Descargar XLSX</button>
+            </div>
+        </div>
+    </div> 
+    <div class="container m-2">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped" id="excel-table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Licencia médica</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let obtainedDoctor of filteredobtainedDoctors; let i = index">                        
+                            
+                            <td>{{ obtainedDoctor.id }}</td>
+                            <td>{{ obtainedDoctor.name }}</td>
+                            <td>{{ obtainedDoctor.lastName }}</td>
+                            <td>{{ obtainedDoctor.medicalLicense }}</td>
+                            <td>{{ obtainedDoctor.email }}</td>
+                            <td>{{ obtainedDoctor.Status }}</td>                            
+                            <td>
+                                <button *ngIf="obtainedDoctor.Status == 'Inactivo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Activo',obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!)"><i-bs name="eye-fill"></i-bs></button>
+                                <button *ngIf="obtainedDoctor.Status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Inactivo', obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!)"><i-bs name="eye-slash-fill"></i-bs></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> 
+</div>

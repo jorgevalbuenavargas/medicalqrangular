@@ -10,6 +10,8 @@ import { UicComponent } from './components/uic/uic.component';
 import { SecuritycodesComponent } from './components/securitycodes/securitycodes.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
+import { AdminDoctorsComponent } from './components/admin-doctors/admin-doctors.component';
+import { AdminPharmaciesComponent } from './components/admin-pharmacies/admin-pharmacies.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
     DoctorUicComponent,
     NavbarComponent,
     UicComponent,
-    SecuritycodesComponent
+    SecuritycodesComponent,
+    AdminDoctorsComponent,
+    AdminPharmaciesComponent
   ],
   imports: [
     BrowserModule,

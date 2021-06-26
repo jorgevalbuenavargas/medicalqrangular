@@ -1,12 +1,14 @@
 <div class="container" *ngIf="loggedProfile !== 'Doctor'">
-    <p>No tienes autorización para acceder a este recurso</p>
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
 </div>
 
 <div class="container" *ngIf="loggedProfile == 'Doctor'">
     <div class="container d-grid gap-4">
         <div class="row">
             <div class="col-12">
-                <h6 class="display-4 text-center">Código de seguridad:</h6>
+                <h6 class="display-4 text-center m-4">Código de seguridad:</h6>
             </div>
         </div>
         <div class="row">
