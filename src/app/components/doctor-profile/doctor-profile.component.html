@@ -1,0 +1,26 @@
+<div class="container" *ngIf="loggedProfile !== 'Doctor'">
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
+</div>
+
+<div class="container" *ngIf="loggedProfile == 'Doctor'">
+    <div class="container">
+        <div class="container m-4">
+            <form>
+                <div class="form-group">
+                    <label for="name">Nombre</label><br>
+                    <input type='text' name="name" class="form-control mt-2" value="{{ obtainedDoctor.name + ' ' + obtainedDoctor.lastName }}" disabled>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="email">Email</label><br>
+                    <input type='text' name="email" class="form-control mt-2" value="{{ obtainedDoctor.email }}" disabled>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="medicalLicense">Licencia Médica</label><br>
+                    <input type='text' name="medicalLicense" class="form-control mt-2" value="{{ obtainedDoctor.medicalLicense }}" disabled>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -16,6 +16,10 @@ export class PharmacyDataService {
     return this.http.get<PharmacyI[]>(this.urlAPI_Pharmacies)
   }
 
+  getPharmacyById(pharmacyId : string):Observable<PharmacyI> {
+    return this.http.get<PharmacyI>(this.urlAPI_Pharmacies + "/" + pharmacyId)
+  }
+
   updatePharmacy(modifiedPharmacy : PharmacyI, modifiedPharmacyID : String): Observable<any> {
     return this.http.put(this.urlAPI_Pharmacies + "/" + modifiedPharmacyID, modifiedPharmacy)
   }

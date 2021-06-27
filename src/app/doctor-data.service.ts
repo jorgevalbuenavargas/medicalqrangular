@@ -20,6 +20,10 @@ export class DoctorDataService {
     return this.http.get<DoctorI[]>(this.urlAPI_Doctors)
   }
 
+  getDoctorById(doctorId : string):Observable<DoctorI> {
+    return this.http.get<DoctorI>(this.urlAPI_Doctors + "/" + doctorId)
+  }
+
   updateDoctor(modifiedDoctor : DoctorI, modifiedDoctorID : String): Observable<any> {
     return this.http.put(this.urlAPI_Doctors + "/" + modifiedDoctorID, modifiedDoctor)
   }
@@ -38,6 +42,14 @@ export class DoctorDataService {
 
   sendNotificationUICById(uicId : string, email : string):Observable<UniqueIdentifierCodeI> {
     return this.http.get<UniqueIdentifierCodeI>(this.urlAPI_UIC + "?id=" + uicId + "&email=" + email)
+  }
+
+  sendNotificationPendingUIC(doctorId : string, email : string):Observable<UniqueIdentifierCodeI> {
+    return this.http.get<UniqueIdentifierCodeI>(this.urlAPI_UIC + "?doctorId=" + doctorId + "&email=" + email)
+  }
+
+  sendNotificationSecurityCodeById(securityCodeId : string, email : string):Observable<SecurityCodeI> {
+    return this.http.get<SecurityCodeI>(this.urlAPI_SC + "?id=" + securityCodeId + "&email=" + email)
   }
 
   addNewUIC(newUniqueIdentifierCode : UniqueIdentifierCodeI): Observable<any> {

@@ -39,10 +39,12 @@ export class SecuritycodesComponent implements OnInit {
     const newSecurityCode = {
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * 999999)).toString(),
-      expirationDate: new Date(),
+      expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+2, 0),
       doctorId: this.loggedDoctorId
     }
     this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(data => {
+      let createdSecurityCode : SecurityCodeI = data;
+      this.doctorService.sendNotificationSecurityCodeById(createdSecurityCode.id!, this.loggedDoctorEmail).subscribe(data => console.log(data)) 
       this.getSecurityCodeByDoctorId();
     });
   }

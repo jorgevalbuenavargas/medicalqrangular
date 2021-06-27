@@ -12,6 +12,8 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
 import { AdminDoctorsComponent } from './components/admin-doctors/admin-doctors.component';
 import { AdminPharmaciesComponent } from './components/admin-pharmacies/admin-pharmacies.component';
+import { DoctorProfileComponent } from './components/doctor-profile/doctor-profile.component';
+import { PharmacyProfileComponent } from './components/pharmacy-profile/pharmacy-profile.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { AdminPharmaciesComponent } from './components/admin-pharmacies/admin-ph
     UicComponent,
     SecuritycodesComponent,
     AdminDoctorsComponent,
-    AdminPharmaciesComponent
+    AdminPharmaciesComponent,
+    DoctorProfileComponent,
+    PharmacyProfileComponent
   ],
   imports: [
     BrowserModule,

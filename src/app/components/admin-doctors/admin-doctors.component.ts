@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { DoctorDataService } from '../../doctor-data.service';
 import { DoctorI } from '../../models/doctor/doctor.interface';
+import { SecurityCodeI } from 'src/app/models/securitycode/securitycode.interface';
+import { UniqueIdentifierCodeI } from 'src/app/models/uic/uic.interface';
 import { AppComponent } from 'src/app/app.component';
 import * as XLSX from 'xlsx'; 
+import { Guid } from "guid-typescript"
 
 @Component({
   selector: 'app-admin-doctors',
@@ -30,9 +33,7 @@ export class AdminDoctorsComponent implements OnInit {
       this.filterByState(filteredStatus);
     } else {
       this.filteredobtainedDoctors = this.obtainedDoctors;
-    }
-    console.log(this.filteredobtainedDoctors.length)
-  });
+    }});
   }
 
   filterByState(selectedStatus: string) {
@@ -68,5 +69,66 @@ export class AdminDoctorsComponent implements OnInit {
       this.getDoctors(receivedStatus);
     })
   }
+
+  createMassiveSecurityCodes() {
+    this.doctorService.getAllDoctors().subscribe(data => { 
+      let massiveObtainedDoctors : DoctorI[] = data; 
+      let massiveFilteredobtainedDoctors : DoctorI[] = massiveObtainedDoctors.filter(doctor => doctor.Status == "Activo")
+      for (let doctor of massiveFilteredobtainedDoctors) {
+        let doctorId : string = doctor.id!;
+        this.saveNewSecurityCode(doctorId)
+      }
+    }) 
+  }
+
+  saveNewSecurityCode(filteredDoctorId : string){
+    const newSecurityCode = { 
+      id: Guid.create().toString(),
+      securityNumber: (Math.floor(Math.random() * (999999 - 100000 + 1) + 100000).toString()),
+      expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+2, 0),
+      doctorId: filteredDoctorId
+    }   
+    this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(securityCodeData => {
+      let createdSecurityCode : SecurityCodeI = securityCodeData;
+      //console.log(createdSecurityCode.id)
+      this.doctorService.getDoctorById(filteredDoctorId).subscribe(doctorData => {
+        let foundDoctor : DoctorI = doctorData;
+        //console.log(foundDoctor.email)
+        this.doctorService.sendNotificationSecurityCodeById(createdSecurityCode.id!, foundDoctor.email).subscribe(data => console.log(data)) 
+      })
+    })
+  }
+
+  notificateMassiveSecurityCodes(){
+    this.doctorService.getAllDoctors().subscribe(doctorsData => {
+      let foundDoctors : DoctorI[] = doctorsData;
+      for (let doctor of foundDoctors) {
+        this.doctorService.getAllSecurityCodesByDoctor(doctor.id!).subscribe(data => {
+          let obtainedSecurityCodesByDoctor : SecurityCodeI[] = data;
+          obtainedSecurityCodesByDoctor.sort((a,b) => (a.expirationDate > b.expirationDate) ? 1 : ((b.expirationDate > a.expirationDate) ? -1 : 0))
+          console.log(obtainedSecurityCodesByDoctor[obtainedSecurityCodesByDoctor.length-1].expirationDate)
+          let securityCode : SecurityCodeI = obtainedSecurityCodesByDoctor[obtainedSecurityCodesByDoctor.length-1]
+          this.doctorService.sendNotificationSecurityCodeById(securityCode.id!, doctor.email).subscribe(data => console.log(data)) 
+        });  
+      }
+    })
+  }
+
+  notificatePendingUICByDoctor() {
+    this.doctorService.getAllDoctors().subscribe(doctorsData => {
+      let foundDoctors : DoctorI[] = doctorsData;
+      let filteredobtainedDoctors : DoctorI[] = foundDoctors.filter(doctor => doctor.Status == 'Activo')
+      for (let doctor of filteredobtainedDoctors) {
+        this.doctorService.getAllUICByDoctor(doctor.id!).subscribe(data => {
+          let obtainedUniqueIdentifierCodesByDoctor : UniqueIdentifierCodeI[] = data;
+          let filteredUniqueIdentifierCodesByDoctor : UniqueIdentifierCodeI[] = obtainedUniqueIdentifierCodesByDoctor.filter(uniquecode => uniquecode.status == 'Pendiente')
+          if (filteredUniqueIdentifierCodesByDoctor.length > 0) {
+            this.doctorService.sendNotificationPendingUIC(doctor.id!, doctor.email).subscribe(data => console.log(data))
+          }
+        })
+      }
+    })
+  }
+
 }
 
