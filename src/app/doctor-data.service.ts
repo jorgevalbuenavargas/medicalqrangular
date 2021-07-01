@@ -28,6 +28,10 @@ export class DoctorDataService {
     return this.http.put(this.urlAPI_Doctors + "/" + modifiedDoctorID, modifiedDoctor)
   }
 
+  updateSecurityCode(modifiedSecurityCode : SecurityCodeI, modifiedSecurityCodeID : String): Observable<any> {
+    return this.http.put(this.urlAPI_SC + "/" + modifiedSecurityCodeID, modifiedSecurityCode)
+  }
+
   getAllUIC():Observable<UniqueIdentifierCodeI[]> {
     return this.http.get<UniqueIdentifierCodeI[]>(this.urlAPI_UIC)
   }

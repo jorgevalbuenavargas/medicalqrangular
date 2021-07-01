@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DoctorDataService } from '../../doctor-data.service';
 import { DoctorI } from '../../models/doctor/doctor.interface';
 import { SecurityCodeI } from 'src/app/models/securitycode/securitycode.interface';
@@ -14,30 +14,77 @@ import { Guid } from "guid-typescript"
 })
 export class AdminDoctorsComponent implements OnInit {
 
+  @ViewChild('alertContainer', { static: true }) 
+  public titleContainer: any;
+  public newAlertElement: any;
   loggedProfile = '';
   obtainedDoctors: DoctorI[] = [];
   filteredobtainedDoctors: DoctorI[] = [];
+  fromDate: any;
+  toDate: any;
+  selectedStatus = '';
 
   constructor(private doctorService : DoctorDataService, private appComponent : AppComponent) { }
 
   ngOnInit(): void {
     this.loggedProfile = this.appComponent.profile;
-    this.getDoctors("Inactivo");
-
+    //this.getDoctors();
   }
 
-  getDoctors(filteredStatus : string) {
+  submit(filterDates : any) {
+    if (filterDates.form.controls.fromDate.value > filterDates.form.controls.toDate.value) {
+      this.createAlertMessage("La fecha desde no puede ser superior a la fecha hasta.", "danger")
+    } else {
+      this.fromDate = filterDates.form.controls.fromDate.value;
+      this.toDate = filterDates.form.controls.toDate.value
+      this.filterByDates(this.fromDate, this.toDate)
+    }
+  }
+
+  createAlertMessage(alertMessage : string, alertType : string){
+    this.newAlertElement = document.createElement("div");
+    this.newAlertElement.innerHTML = '<div class="alert alert-'+alertType+' alert-dismissible fade show" role="alert">' + 
+    alertMessage + 
+    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    this.titleContainer.nativeElement.appendChild(this.newAlertElement);
+  }
+
+  getDoctors() {
     this.doctorService.getAllDoctors().subscribe(data => { 
       this.obtainedDoctors = data; 
-      if (filteredStatus.length > 0) {
+    });
+  }
+
+  getFilteredDoctors(filteredStatus : string) {
+    this.filteredobtainedDoctors = [];
+    this.selectedStatus = filteredStatus;
+    this.doctorService.getAllDoctors().subscribe(data => { 
+      this.obtainedDoctors = data; 
       this.filterByState(filteredStatus);
-    } else {
-      this.filteredobtainedDoctors = this.obtainedDoctors;
-    }});
+      if(this.filteredobtainedDoctors.length == 0) {
+        this.createAlertMessage("No se encontraron resultados para el estado " + filteredStatus + ".", "danger")
+      }
+    });
   }
 
   filterByState(selectedStatus: string) {
     this.filteredobtainedDoctors = this.obtainedDoctors.filter(doctor => doctor.Status == selectedStatus)
+  }
+
+  filterByDates(fromDate: string, toDate: string) {
+    this.filteredobtainedDoctors = [];
+    this.selectedStatus = '';
+    this.doctorService.getAllDoctors().subscribe(data => { 
+      this.obtainedDoctors = data; 
+      for (let doctor of this.obtainedDoctors) {
+        if (new Date(doctor.creationDate) >= new Date(fromDate) && new Date(doctor.creationDate) <= new Date(toDate)) {
+          this.filteredobtainedDoctors.push(doctor)
+        }
+      }
+      if (this.filteredobtainedDoctors.length == 0) {
+        this.createAlertMessage("No se encontraron resultados para el rango de fechas indicado.", "danger")
+      }
+    });
   }
   
   /*name of the excel-file which will be downloaded. */ 
@@ -57,16 +104,23 @@ export class AdminDoctorsComponent implements OnInit {
         
   }
 
-  onUpdateDoctor(receivedId: string, receivedStatus : string, receivedName : string, receivedLastName : string, receivedMedicalLicense : string, receivedEmail : string): void {
+  onUpdateDoctor(receivedId: string, receivedStatus : string, receivedName : string, receivedLastName : string, receivedMedicalLicense : string, receivedEmail : string, receivedCreationDate : Date): void {
     const actualDoctor = {
       name : receivedName,
       lastName : receivedLastName,
       medicalLicense : receivedMedicalLicense,
       Status : receivedStatus,
-      email : receivedEmail
+      email : receivedEmail,
+      creationDate: receivedCreationDate
     }
     this.doctorService.updateDoctor(actualDoctor, receivedId).subscribe(data => {
-      this.getDoctors(receivedStatus);
+      //this.getDoctors(receivedStatus);
+      if (this.selectedStatus.length == 0){
+        this.filterByDates(this.fromDate, this.toDate)
+      }else {
+        this.getFilteredDoctors(this.selectedStatus)
+      }
+      this.createAlertMessage("Doctor modificado con éxito", "success")
     })
   }
 
@@ -78,6 +132,7 @@ export class AdminDoctorsComponent implements OnInit {
         let doctorId : string = doctor.id!;
         this.saveNewSecurityCode(doctorId)
       }
+      this.createAlertMessage("Proceso de creación de Códigos de seguridad finalizado con éxito", "success")
     }) 
   }
 
@@ -85,7 +140,7 @@ export class AdminDoctorsComponent implements OnInit {
     const newSecurityCode = { 
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * (999999 - 100000 + 1) + 100000).toString()),
-      expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+2, 0),
+      expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
       doctorId: filteredDoctorId
     }   
     this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(securityCodeData => {
@@ -106,11 +161,12 @@ export class AdminDoctorsComponent implements OnInit {
         this.doctorService.getAllSecurityCodesByDoctor(doctor.id!).subscribe(data => {
           let obtainedSecurityCodesByDoctor : SecurityCodeI[] = data;
           obtainedSecurityCodesByDoctor.sort((a,b) => (a.expirationDate > b.expirationDate) ? 1 : ((b.expirationDate > a.expirationDate) ? -1 : 0))
-          console.log(obtainedSecurityCodesByDoctor[obtainedSecurityCodesByDoctor.length-1].expirationDate)
+          //console.log(obtainedSecurityCodesByDoctor[obtainedSecurityCodesByDoctor.length-1].expirationDate)
           let securityCode : SecurityCodeI = obtainedSecurityCodesByDoctor[obtainedSecurityCodesByDoctor.length-1]
           this.doctorService.sendNotificationSecurityCodeById(securityCode.id!, doctor.email).subscribe(data => console.log(data)) 
         });  
       }
+      this.createAlertMessage("Proceso de notificación de Códigos de seguridad finalizado con éxito", "success")
     })
   }
 
@@ -127,6 +183,7 @@ export class AdminDoctorsComponent implements OnInit {
           }
         })
       }
+      this.createAlertMessage("Proceso de notificación de CUI pendientes finalizado con éxito", "success")
     })
   }
 

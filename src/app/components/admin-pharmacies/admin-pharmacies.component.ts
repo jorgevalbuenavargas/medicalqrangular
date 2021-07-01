@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PharmacyDataService } from 'src/app/pharmacy-data.service';
 import { PharmacyI } from 'src/app/models/pharmacy/pharmacy.interface';
 import { AppComponent } from 'src/app/app.component';
@@ -11,25 +11,72 @@ import * as XLSX from 'xlsx';
 })
 export class AdminPharmaciesComponent implements OnInit {
 
+  @ViewChild('alertContainer', { static: true }) 
+  public titleContainer: any;
+  public newAlertElement: any;
   loggedProfile = '';
   obtainedPharmacies: PharmacyI[] = [];
   filteredobtainedPharmacies: PharmacyI[] = [];
+  fromDate: any;
+  toDate: any;
+  selectedStatus = '';
 
   constructor(private pharmacyDataService : PharmacyDataService, private appComponent : AppComponent) { }
 
   ngOnInit(): void {
     this.loggedProfile = this.appComponent.profile;
-    this.getPharmacies("Inactivo");
+    //this.getPharmacies("Inactivo");
   }
 
-  getPharmacies(filteredStatus : string) {
+  submit(filterDates : any) {
+    if (filterDates.form.controls.fromDate.value > filterDates.form.controls.toDate.value) {
+      this.createAlertMessage("La fecha desde no puede ser superior a la fecha hasta.", "danger")
+    } else {
+      this.fromDate = filterDates.form.controls.fromDate.value;
+      this.toDate = filterDates.form.controls.toDate.value
+      this.filterByDates(this.fromDate, this.toDate)
+    }
+  }
+
+  createAlertMessage(alertMessage : string, alertType : string){
+    this.newAlertElement = document.createElement("div");
+    this.newAlertElement.innerHTML = '<div class="alert alert-'+alertType+' alert-dismissible fade show" role="alert">' + 
+    alertMessage + 
+    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    this.titleContainer.nativeElement.appendChild(this.newAlertElement);
+  }
+
+  getPharmacies() {
     this.pharmacyDataService.getAllPharmacies().subscribe(data => { 
       this.obtainedPharmacies = data; 
-      if (filteredStatus.length > 0) {
+    });
+  }
+
+  filterByDates(fromDate: string, toDate: string) {
+    this.filteredobtainedPharmacies = [];
+    this.selectedStatus = '';
+    this.pharmacyDataService.getAllPharmacies().subscribe(data => { 
+      this.obtainedPharmacies = data; 
+      for (let pharmacy of this.obtainedPharmacies) {
+        if (new Date(pharmacy.creationDate) >= new Date(fromDate) && new Date(pharmacy.creationDate) <= new Date(toDate)) {
+          this.filteredobtainedPharmacies.push(pharmacy)
+        }
+      }
+      if (this.filteredobtainedPharmacies.length == 0) {
+        this.createAlertMessage("No se encontraron resultados para el rango de fechas indicado.", "danger")
+      }
+    });
+  }
+
+  getFilteredPharmacies(filteredStatus : string) {
+    this.filteredobtainedPharmacies = [];
+    this.selectedStatus = filteredStatus;
+    this.pharmacyDataService.getAllPharmacies().subscribe(data => { 
+      this.obtainedPharmacies = data; 
       this.filterByState(filteredStatus);
-    } else {
-      this.filteredobtainedPharmacies = this.obtainedPharmacies;
-    }
+      if(this.filteredobtainedPharmacies.length == 0) {
+        this.createAlertMessage("No se encontraron resultados para el estado " + filteredStatus + ".", "danger")
+      }
     });
   }
   
@@ -55,18 +102,25 @@ export class AdminPharmaciesComponent implements OnInit {
         
   }
 
-  onUpdatePharmacy(receivedId: string, receivedStatus : string, receivedCuit : string, receivedCompanyName : string, receivedBusinessName : string, receivedEmail : string): void {
+  onUpdatePharmacy(receivedId: string, receivedStatus : string, receivedCuit : string, receivedCompanyName : string, receivedBusinessName : string, receivedEmail : string, receivedCreationDate : Date): void {
     const actualPharmacy = {
       cuit : receivedCuit,
       company_name : receivedCompanyName,
       business_name : receivedBusinessName,
       Status : receivedStatus,
-      email : receivedEmail
+      email : receivedEmail,
+      creationDate : receivedCreationDate
     }
-    console.log(actualPharmacy)
-    console.log(receivedId)
+    //console.log(actualPharmacy)
+    //console.log(receivedId)
     this.pharmacyDataService.updatePharmacy(actualPharmacy, receivedId).subscribe(data => {
-          this.getPharmacies(receivedStatus);
+          //this.getPharmacies(receivedStatus);
+          if (this.selectedStatus.length == 0){
+            this.filterByDates(this.fromDate, this.toDate)
+          }else {
+            this.getFilteredPharmacies(this.selectedStatus)
+          }
+          this.createAlertMessage("Farmacia modificada con éxito", "success");
     })    
   }
 

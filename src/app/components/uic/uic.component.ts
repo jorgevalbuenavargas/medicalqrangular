@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive, ViewChild } from '@angular/core';
 import { DoctorDataService } from '../../doctor-data.service';
 import { UniqueIdentifierCodeI } from '../../models/uic/uic.interface';
 import { AppComponent } from 'src/app/app.component';
@@ -12,22 +12,45 @@ import { Guid } from "guid-typescript"
   styleUrls: ['./uic.component.css']
 })
 
+/*@Directive({selector: 'child-directive'})
+class ChildDirective {
+}*/
+
 
 export class UicComponent implements OnInit {
 
-  loggedDoctorId = ''
-  loggedProfile = ''
-  loggedDoctorEmail = ''
+  @ViewChild('alertContainer', { static: true })
+  //@ViewChild(ChildDirective) child!: ChildDirective;
+  public titleContainer: any;
+  public newAlertElement: any;
+  @ViewChild('modalContainer', { static: true })
+  //@ViewChild(ChildDirective) child!: ChildDirective;
+  public modalTitleContainer: any;
+  public modalNewAlertElement: any;
+  loggedDoctorId = '';
+  loggedProfile = '';
+  loggedDoctorEmail = '';
   obtainedUniqueIdentifierCodesByDoctor: UniqueIdentifierCodeI[] = [];
   filteredUniqueIdentifierCodesByDoctor: UniqueIdentifierCodeI[] = [];
+  newCreatedUIC!: UniqueIdentifierCodeI;  
 
-  constructor(private doctorService : DoctorDataService, private appComponent : AppComponent) { }
+  constructor(private doctorService : DoctorDataService, private appComponent : AppComponent) { };
+
 
   ngOnInit(): void {
     this.loggedDoctorId = this.appComponent.loggedId;
     this.loggedProfile = this.appComponent.profile;
     this.loggedDoctorEmail = this.appComponent.userEmail;
+    this.createNewUIC();
     this.getUICByDoctorId("");
+  }
+
+  createAlertMessage(alertMessage : string){
+    this.newAlertElement = document.createElement("div");
+    this.newAlertElement.innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' + 
+    alertMessage + 
+    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    this.titleContainer.nativeElement.appendChild(this.newAlertElement);
   }
 
   getUICByDoctorId(filteredStatus : string) {
@@ -38,37 +61,52 @@ export class UicComponent implements OnInit {
       } else {
         this.filteredUniqueIdentifierCodesByDoctor = this.obtainedUniqueIdentifierCodesByDoctor;
       }
-      console.log(this.filteredUniqueIdentifierCodesByDoctor.length)
+      //console.log(this.filteredUniqueIdentifierCodesByDoctor.length)
     });     
   }
 
+  createNewUIC(){
+    this.newCreatedUIC = {
+      id: Guid.create().toString(),
+      status: "Pendiente",
+      creationDate: new Date(),
+      doctorId: this.loggedDoctorId,
+      modificationDate: new Date()
+    }
+  }
+
   saveNewUIC(){
-    const newUIC = {
+    /*const newUIC = {
       id: Guid.create().toString(),
       status: "Pendiente",
       creationDate: new Date(),
       doctorId: this.loggedDoctorId
-    }
-    this.doctorService.addNewUIC(newUIC).subscribe(data => {
+    }*/
+    this.doctorService.addNewUIC(this.newCreatedUIC).subscribe(data => {
       this.getUICByDoctorId("Pendiente");
-    });
-    
+      this.createAlertMessage("CUI generado con éxito")
+    });    
   }
+  
+
 
   onUpdateUIC(receivedId: string, receivedStatus : string, receivedCeationDate : Date, receivedDoctorId : string, filteredStatus : string ): void {
     const actualUIC = {
       status: receivedStatus,
       creationDate: receivedCeationDate,
-      doctorId: receivedDoctorId
+      doctorId: receivedDoctorId,
+      modificationDate: new Date()
     }
     this.doctorService.updateUIC(actualUIC, receivedId).subscribe(data => {
       this.getUICByDoctorId(filteredStatus);
+      this.createAlertMessage("CUI actualizado con éxito")
     });    
   }
 
   onDeleteUIC(receivedId: string, filteredStatus: string) : void {
     this.doctorService.deleteUIC(receivedId).subscribe(data => {
       this.getUICByDoctorId(filteredStatus);
+      this.createAlertMessage("CUI eliminado con éxito")
     });
   }
 
@@ -77,7 +115,7 @@ export class UicComponent implements OnInit {
   }
 
   sendUICByEmail(receivedId: string) {
-    this.doctorService.sendNotificationUICById(receivedId, this.loggedDoctorEmail).subscribe(data => console.log("Email enviado"));
+    this.doctorService.sendNotificationUICById(receivedId, this.loggedDoctorEmail).subscribe(data => this.createAlertMessage("Email envíado con éxito"));
     
   }
 

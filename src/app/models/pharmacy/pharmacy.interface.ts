@@ -6,5 +6,6 @@ export interface PharmacyI {
     company_name: string;
     business_name: string;
     email: string;
-    Status: string
+    Status: string;
+    creationDate : Date
 }

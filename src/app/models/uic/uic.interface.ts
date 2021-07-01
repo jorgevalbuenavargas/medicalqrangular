@@ -5,4 +5,5 @@ export interface UniqueIdentifierCodeI {
     status: string;
     creationDate: Date;
     doctorId: string;
+    modificationDate: Date
 }

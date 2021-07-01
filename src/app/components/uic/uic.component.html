@@ -4,12 +4,16 @@
     </div>
 </div>
 
-<div class="container" *ngIf="loggedProfile == 'Doctor'">
-    <div class="container">
+<div class="container mt-4" #alertContainer></div>
+<div class="container mt-4" #modalContainer></div>
+
+<div class="container mt-10" *ngIf="loggedProfile == 'Doctor'">
+    <div class="container" >
         <div class="container">
             <div class='row justify-content-end'>
                 <div class="col-12">
-                    <button class="btn btn-primary" (click)="saveNewUIC()">Agregar nuevo</button>
+                    <!--<button class="btn btn-primary" (click)="saveNewUIC()">Agregar nuevo</button>-->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" (click)="createNewUIC()">Agregar nuevo</button>
                     <button class="btn btn-secondary" (click)="getUICByDoctorId('Pendiente')">Pendientes</button>
                     <button class="btn btn-success" (click)="getUICByDoctorId('Activo')">Habilitados</button>
                     <button class="btn btn-warning" (click)="getUICByDoctorId('Inactivo')">Deshabilitados</button>
@@ -18,37 +22,7 @@
             </div>
         </div>    
 
-        <!--<div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Estado</th>
-                                <th>Fecha de creación</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let obtainedUniqueIdentifierCodeByDoctor of obtainedUniqueIdentifierCodesByDoctor; let i = index">
-                                <td><qrcode [qrdata]="obtainedUniqueIdentifierCodeByDoctor.id!" [scale]="2" [width]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
-                                <td>{{ obtainedUniqueIdentifierCodeByDoctor.status }}</td>
-                                <td>{{ obtainedUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy HH:mm" }}</td>
-                                <td>
-                                    <button *ngIf="obtainedUniqueIdentifierCodeByDoctor.status !== 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(obtainedUniqueIdentifierCodeByDoctor.id!, 'Activo', obtainedUniqueIdentifierCodeByDoctor.creationDate!, obtainedUniqueIdentifierCodeByDoctor.doctorId!)">Habilitar</button>
-                                    <button *ngIf="obtainedUniqueIdentifierCodeByDoctor.status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(obtainedUniqueIdentifierCodeByDoctor.id!, 'Inactivo', obtainedUniqueIdentifierCodeByDoctor.creationDate!, obtainedUniqueIdentifierCodeByDoctor.doctorId!)">Deshabilitar</button>
-                                    <button type="button" class="btn btn-danger" (click)="onDeleteUIC(obtainedUniqueIdentifierCodeByDoctor.id!)">Eliminar</button>
-                                    <button type="button" class="btn btn-primary" (click)="onDeleteUIC(obtainedUniqueIdentifierCodeByDoctor.id!)">Enviar Email</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>-->
-
-        <div class="container">
+        <div class="container mt-4">
             <div class="row">
                 <div class="col-12">
                     <table class="table table-striped" id="excel-table">
@@ -56,8 +30,9 @@
                             <tr>
                                 <th>Código QR</th>
                                 <th>Id</th>
-                                <th>Estado</th>
                                 <th>Fecha de creación</th>
+                                <th>Última fecha de modificación</th>
+                                <th>Estado</th>                                
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -65,8 +40,9 @@
                             <tr *ngFor="let filteredUniqueIdentifierCodeByDoctor of filteredUniqueIdentifierCodesByDoctor; let i = index">                                
                                 <td><qrcode [qrdata]="filteredUniqueIdentifierCodeByDoctor.id!" [scale]="2" [width]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
                                 <td>{{ filteredUniqueIdentifierCodeByDoctor.id }}</td>
-                                <td>{{ filteredUniqueIdentifierCodeByDoctor.status }}</td>
-                                <td>{{ filteredUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy HH:mm" }}</td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy HH:mm:ss" }}</td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.modificationDate | date : "dd/MM/yyyy HH:mm:ss" }}</td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.status }}</td>                                
                                 <td>
                                     <button *ngIf="filteredUniqueIdentifierCodeByDoctor.status !== 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(filteredUniqueIdentifierCodeByDoctor.id!, 'Activo', filteredUniqueIdentifierCodeByDoctor.creationDate!, filteredUniqueIdentifierCodeByDoctor.doctorId!, 'Activo')"><i-bs name="eye-fill"></i-bs></button>
                                     <button *ngIf="filteredUniqueIdentifierCodeByDoctor.status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(filteredUniqueIdentifierCodeByDoctor.id!, 'Inactivo', filteredUniqueIdentifierCodeByDoctor.creationDate!, filteredUniqueIdentifierCodeByDoctor.doctorId!, 'Inactivo')"><i-bs name="eye-slash-fill"></i-bs></button>
@@ -83,7 +59,21 @@
 </div>
 
 
-
-
-
-
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">¿Desea proceder con la creación?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            <qrcode [qrdata]="newCreatedUIC.id!" [scale]="5" [width]="1" [errorCorrectionLevel]="'M'"></qrcode>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="saveNewUIC()">Confirmar</button>
+        </div>
+        </div>
+    </div>
+</div>

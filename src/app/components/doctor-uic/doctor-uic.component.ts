@@ -33,7 +33,8 @@ export class DoctorUicComponent implements OnInit {
       id: Guid.create().toString(),
       status: "Activo",
       creationDate: new Date(),
-      doctorId: "ec1a7830-f706-45e8-bbcf-4440cd33e2eb"
+      doctorId: "ec1a7830-f706-45e8-bbcf-4440cd33e2eb",
+      modificationDate: new Date()
     }
     //this.doctorService.addNewUIC(newUIC).subscribe(insertedUIC => this.obtainedUniqueIdentifierCodesByDoctor.push(insertedUIC))
     this.doctorService.addNewUIC(newUIC).subscribe();
@@ -45,7 +46,8 @@ export class DoctorUicComponent implements OnInit {
     const actualUIC = {
       status: receivedStatus,
       creationDate: new Date(receivedCeationDate),
-      doctorId: receivedDoctorId
+      doctorId: receivedDoctorId,
+      modificationDate: new Date()
     }
     this.doctorService.updateUIC(actualUIC, receivedId).subscribe();
     this.getUICByDoctorId();

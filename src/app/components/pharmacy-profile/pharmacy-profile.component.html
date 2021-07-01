@@ -8,22 +8,18 @@
     <div class="container">
         <div class="container m-4">
             <form>
-                <div class="form-group">
-                    <label for="company">Empresa</label><br>
+                <div class="form-group mt-3">
+                    <label for="cuit">CUIT</label><br>
+                    <input type='text' name="cuit" class="form-control mt-2" value="{{ obtainedPharmacy.cuit }}" disabled>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="company">Razón Social</label><br>
                     <input type='text' name="company" class="form-control mt-2" value="{{ obtainedPharmacy.company_name }}" disabled>
                 </div>
                 <div class="form-group mt-3">
                     <label for="business">Nombre de fantasia</label><br>
                     <input type='text' name="business" class="form-control mt-2" value="{{ obtainedPharmacy.business_name }}" disabled>
-                </div>
-                <div class="form-group mt-3">
-                    <label for="email">Email</label><br>
-                    <input type='text' name="email" class="form-control mt-2" value="{{ obtainedPharmacy.email }}" disabled>
-                </div>
-                <div class="form-group mt-3">
-                    <label for="cuit">CUIT</label><br>
-                    <input type='text' name="cuit" class="form-control mt-2" value="{{ obtainedPharmacy.cuit }}" disabled>
-                </div>
+                </div>                
             </form>
         </div>
     </div>

@@ -7,4 +7,5 @@ export interface DoctorI {
     medicalLicense: string;
     Status: string;
     email: string;
+    creationDate : Date
 }

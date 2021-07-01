@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +15,7 @@ import { AdminDoctorsComponent } from './components/admin-doctors/admin-doctors.
 import { AdminPharmaciesComponent } from './components/admin-pharmacies/admin-pharmacies.component';
 import { DoctorProfileComponent } from './components/doctor-profile/doctor-profile.component';
 import { PharmacyProfileComponent } from './components/pharmacy-profile/pharmacy-profile.component';
+import { MedicalPrescriptionsComponent } from './components/medical-prescriptions/medical-prescriptions.component';
 
 @NgModule({
   declarations: [
@@ -25,13 +27,15 @@ import { PharmacyProfileComponent } from './components/pharmacy-profile/pharmacy
     AdminDoctorsComponent,
     AdminPharmaciesComponent,
     DoctorProfileComponent,
-    PharmacyProfileComponent
+    PharmacyProfileComponent,
+    MedicalPrescriptionsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     QRCodeModule,
+    FormsModule,
     NgxBootstrapIconsModule.pick(allIcons)
   ],
   providers: [],
