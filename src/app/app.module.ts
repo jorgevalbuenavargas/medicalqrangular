@@ -16,6 +16,7 @@ import { AdminPharmaciesComponent } from './components/admin-pharmacies/admin-ph
 import { DoctorProfileComponent } from './components/doctor-profile/doctor-profile.component';
 import { PharmacyProfileComponent } from './components/pharmacy-profile/pharmacy-profile.component';
 import { MedicalPrescriptionsComponent } from './components/medical-prescriptions/medical-prescriptions.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MedicalPrescriptionsComponent } from './components/medical-prescription
     HttpClientModule,
     QRCodeModule,
     FormsModule,
+    ReactiveFormsModule,
     NgxBootstrapIconsModule.pick(allIcons)
   ],
   providers: [],

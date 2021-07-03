@@ -8,7 +8,8 @@
                 <li *ngIf="profile == 'Doctor'" class="nav-item"><a class="nav-link active" aria-current="page" href="#!" routerLink="/cui" routerLinkActive="active">CUI</a></li>
                 <li *ngIf="profile == 'Doctor'" class="nav-item"><a class="nav-link" href="#!" routerLink="/securitycode" routerLinkActive="active" >Código de seguridad</a></li>
                 <li *ngIf="profile == 'Doctor'" class="nav-item"><a class="nav-link" href="#!" routerLink="/doctorProfile" routerLinkActive="active" >Perfil</a></li>
-                <li *ngIf="profile == 'Farmacia'" class="nav-item"><a class="nav-link" href="#!" routerLink="/pharmacyProfile" routerLinkActive="active" >Perfil</a></li>
+                <li *ngIf="profile == 'Farmacia'" class="nav-item"><a class="nav-link" href="#!" routerLink="/medicalPrescriptions" routerLinkActive="active" >Prescripciones médicas</a></li>
+                <li *ngIf="profile == 'Farmacia'" class="nav-item"><a class="nav-link" href="#!" routerLink="/pharmacyProfile" routerLinkActive="active" >Perfil</a></li>                
                 <li *ngIf="profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminDoctors" routerLinkActive="active" >Doctores</a></li>
                 <li *ngIf="profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminPharmacies" routerLinkActive="active" >Farmacias</a></li>
             </ul>

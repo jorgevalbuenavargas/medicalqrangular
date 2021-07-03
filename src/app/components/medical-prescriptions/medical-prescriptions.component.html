@@ -1,1 +1,43 @@
-<p>medical-prescriptions works!</p>
+<div class="container" *ngIf="loggedProfile !== 'Farmacia'">
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
+</div>
+
+<div class="container mt-4" #alertContainer>
+    <h3>Validación de prescripciones médicas</h3>
+</div>
+
+<div class="container mt-4" #alertContainer></div>
+
+<div class="container" *ngIf="loggedProfile == 'Farmacia'">
+    <div class="container p-4">
+        <form [formGroup]="medicalPrescriptionForm" (ngSubmit)="onSubmit()" class="row g-3">
+            <div class="col-12">
+                <label for="uic" class="form-label">Código QR:</label>
+                <input id="uic" type="text" class="form-control" formControlName="uic" required>
+            </div>  
+            <div *ngIf="medicalPrescriptionForm.controls.uic.touched && medicalPrescriptionForm.controls.uic.invalid">
+                <div *ngIf="medicalPrescriptionForm.controls.uic.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Lea un Código QR a través de su lector de Código de barras</div>                
+            </div>
+            <div class="col-md-6">
+                <label for="securityCode" class="form-label">Código Seguridad:</label>
+                <input id="securityCode" type="number" class="form-control" formControlName="securityCode" required >
+            </div>           
+            <div class="col-md-6">
+                <label for="expirationDate" class="form-label">Fecha Vigencia:</label>
+                <input id="expirationDate" type="date" class="form-control" formControlName="expirationDate" required >
+            </div>  
+            <div class="col-md-6" *ngIf="medicalPrescriptionForm.controls.securityCode.touched && medicalPrescriptionForm.controls.securityCode.invalid">
+                <div *ngIf="medicalPrescriptionForm.controls.securityCode.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique el código de seguridad consignado en la prescripción</div>
+                <div *ngIf="medicalPrescriptionForm.controls.securityCode.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El código de seguridad debe ser igual a seis dígitos</div>
+            </div>          
+            <div class="col-md-6 justify-content-md-end" *ngIf="medicalPrescriptionForm.controls.expirationDate.touched && medicalPrescriptionForm.controls.expirationDate.invalid">
+                <div *ngIf="medicalPrescriptionForm.controls.expirationDate.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique la fecha de vigencia consignada en la prescripción</div>                
+            </div> 
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-success" [disabled]="!medicalPrescriptionForm.valid"><h4>Validar</h4></button>                
+            </div>
+        </form>
+    </div>
+</div>
