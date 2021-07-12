@@ -34,6 +34,10 @@ export class PharmacyDataService {
     return this.http.get<MedicalReceiptI[]>(this.urlAPI_MedicalReceipts)
   }
 
+  getAllMedicalReceiptsByPharmacy(pharmacyId : string):Observable<MedicalReceiptI[]> {
+    return this.http.get<MedicalReceiptI[]>(this.urlAPI_MedicalReceipts + "?pharmacyId=" + pharmacyId)
+  }
+
   addNewPharmacy(newPharmacy : PharmacyI): Observable<any> {
     return this.http.post(this.urlAPI_Pharmacies, newPharmacy)
   }

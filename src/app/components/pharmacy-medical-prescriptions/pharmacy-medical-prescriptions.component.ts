@@ -1,19 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PharmacyDataService } from 'src/app/pharmacy-data.service';
 import { DoctorDataService } from 'src/app/doctor-data.service';
-import { PharmacyI } from 'src/app/models/pharmacy/pharmacy.interface';
-import { DoctorI } from 'src/app/models/doctor/doctor.interface';
 import { MedicalReceiptI } from 'src/app/models/medicalReceipts/medicalReceipt.interface';
 import { CustomizeMedicalReceiptI } from 'src/app/models/customizeMedicalReceipts/customizeMedicalReceipts.interface';
 import { AppComponent } from 'src/app/app.component';
 import * as XLSX from 'xlsx'; 
 
 @Component({
-  selector: 'app-admin-medicalreceipts',
-  templateUrl: './admin-medicalreceipts.component.html',
-  styleUrls: ['./admin-medicalreceipts.component.css']
+  selector: 'app-pharmacy-medical-prescriptions',
+  templateUrl: './pharmacy-medical-prescriptions.component.html',
+  styleUrls: ['./pharmacy-medical-prescriptions.component.css']
 })
-export class AdminMedicalreceiptsComponent implements OnInit {
+export class PharmacyMedicalPrescriptionsComponent implements OnInit {
 
   @ViewChild('alertContainer', { static: true }) 
   public titleContainer: any;
@@ -63,7 +61,7 @@ export class AdminMedicalreceiptsComponent implements OnInit {
     this.obtainedMedicalReceipts = [];
     this.customizeMedicalReceipts = [];
     this.filteredObtainedMedicalReceipts = [];
-    this.pharmacyDataService.getAllMedicalReceipts().subscribe(data => { 
+    this.pharmacyDataService.getAllMedicalReceiptsByPharmacy(this.appComponent.loggedId).subscribe(data => { 
       this.obtainedMedicalReceipts = data; 
       for (let medicalReceipt of this.obtainedMedicalReceipts) {
         if (new Date(medicalReceipt.scanDate) >= new Date(fromDate) && new Date(medicalReceipt.scanDate) <= new Date(toDate)) {

@@ -6,6 +6,7 @@ import { UniqueIdentifierCodeI } from 'src/app/models/uic/uic.interface';
 import { AppComponent } from 'src/app/app.component';
 import * as XLSX from 'xlsx'; 
 import { Guid } from "guid-typescript"
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-doctors',
@@ -23,11 +24,20 @@ export class AdminDoctorsComponent implements OnInit {
   fromDate: any;
   toDate: any;
   selectedStatus = '';
+  @ViewChild('modalContainer', { static: true })
+  public modalTitleContainer: any;
+  public modalNewAlertElement: any;
+  selectedDoctorId = '';
+  doctorRegistrationForm = new FormGroup({
+    doctorMedicalLicense: new FormControl(''),
+  });
+  validMedicalLicense = true;
 
   constructor(private doctorService : DoctorDataService, private appComponent : AppComponent) { }
 
   ngOnInit(): void {
     this.loggedProfile = this.appComponent.profile;
+    this.createAlertMessage("¡Bienvenido!", "success")
     //this.getDoctors();
   }
 
@@ -197,6 +207,35 @@ export class AdminDoctorsComponent implements OnInit {
       }
       this.createAlertMessage("Proceso de notificación de CUI pendientes finalizado con éxito", "success")
     })
+  }
+
+  modalModifyMedicalLicense(doctorId: string){
+    this.selectedDoctorId = doctorId;
+  }
+
+  modifyMedicalLicense(){    
+    this.doctorService.getDoctorById(this.selectedDoctorId).subscribe(data => { 
+      let obtainedDoctor : DoctorI = data; 
+      this.onUpdateDoctor(obtainedDoctor.id!, obtainedDoctor.Status, obtainedDoctor.name, obtainedDoctor.lastName, this.doctorRegistrationForm.controls.doctorMedicalLicense.value, obtainedDoctor.email, obtainedDoctor.creationDate, obtainedDoctor.GmailID, obtainedDoctor.FacebookID)
+    });
+  }
+
+  onMedicalLiceseChange(){
+    if (this.doctorRegistrationForm.controls.doctorMedicalLicense.value.length >= 6) {
+      this.validMedicalLicense = true
+      this.doctorService.getAllDoctors().subscribe(doctorsData => {
+        let allDoctors : DoctorI[] = doctorsData
+        for (let doctor of allDoctors) {
+          if (doctor.medicalLicense == this.doctorRegistrationForm.controls.doctorMedicalLicense.value){
+            this.validMedicalLicense = false;
+            break;
+          }      
+        }        
+        if (!this.validMedicalLicense) {
+          this.doctorRegistrationForm.controls.doctorMedicalLicense.setErrors({'incorrect': true});
+        }
+      })
+    }    
   }
 
 }

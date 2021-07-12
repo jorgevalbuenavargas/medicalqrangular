@@ -11,6 +11,7 @@ import { AdminMedicalreceiptsComponent } from './components/admin-medicalreceipt
 import { RegistrationComponent } from './components/registration/registration.component';
 import { LoginComponent } from './components/login/login.component';
 import { AdminProfileComponent } from './components/admin-profile/admin-profile.component';
+import { PharmacyMedicalPrescriptionsComponent } from './components/pharmacy-medical-prescriptions/pharmacy-medical-prescriptions.component';
 
 const routes: Routes = [
   {path: 'cui', component: UicComponent},
@@ -23,7 +24,8 @@ const routes: Routes = [
   {path: 'adminPrescriptions', component: AdminMedicalreceiptsComponent},
   {path: 'registration', component: RegistrationComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'adminProfile', component: AdminProfileComponent}
+  {path: 'adminProfile', component: AdminProfileComponent},
+  {path: 'pharmacyMedicalPrescriptions', component: PharmacyMedicalPrescriptionsComponent},
 ];
 
 @NgModule({

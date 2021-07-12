@@ -64,6 +64,7 @@
                             <td>
                                 <button *ngIf="obtainedDoctor.Status != 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Activo',obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!, obtainedDoctor.creationDate!, obtainedDoctor.GmailID!, obtainedDoctor.FacebookID!)"><i-bs name="eye-fill"></i-bs></button>
                                 <button *ngIf="obtainedDoctor.Status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Inactivo', obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!, obtainedDoctor.creationDate!, obtainedDoctor.GmailID!, obtainedDoctor.FacebookID!)"><i-bs name="eye-slash-fill"></i-bs></button>
+                                <button *ngIf="obtainedDoctor.Status != 'Activo'" type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop" (click)="modalModifyMedicalLicense(obtainedDoctor.id!)"><i-bs name="pen-fill"></i-bs></button>
                             </td>
                         </tr>
                     </tbody>
@@ -71,4 +72,35 @@
             </div>
         </div>
     </div> 
+</div>
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Modificar licencia médica</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="doctorRegistrationForm" (ngSubmit)="modifyMedicalLicense()" class="row">
+                <div class="col-md-12">  
+                    <label for="doctorMedicalLicense" class="form-label">Nueva Licencia médica:</label>                  
+                    <input id="doctorMedicalLicense" type="text" minlength="6" class="form-control" formControlName="doctorMedicalLicense" required (change)='onMedicalLiceseChange()'>
+                </div>  
+                <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.touched && doctorRegistrationForm.controls.doctorMedicalLicense.invalid">
+                    <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique una Licencia médica</div>                
+                    <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">La licencia médica debe ser de al menos 6 caracteres</div>
+                </div>
+                <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.touched">
+                    <div *ngIf="!validMedicalLicense" class="alert alert-warning alert-dismissible fade show" role="alert">La Licencia médica ya se encuentra en uso.</div>                
+                </div>            
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="modifyMedicalLicense()" [disabled]="!doctorRegistrationForm.valid">Modificar</button>
+        </div>
+        </div>
+    </div>
 </div>

@@ -1,4 +1,4 @@
-<div class="container" *ngIf="loggedProfile !== 'Admin'">
+<div class="container" *ngIf="loggedProfile !== 'Farmacia'">
     <div class="container p-4">
         <p>No posee autorización para acceder a este recurso</p>
     </div>
@@ -6,7 +6,7 @@
 
 <div class="container mt-4" #alertContainer></div>
 
-<div class="container" *ngIf="loggedProfile == 'Admin'">
+<div class="container" *ngIf="loggedProfile == 'Farmacia'">
     <div class="container p-4">
         <form #filterDates="ngForm" (ngSubmit)="submit(filterDates)" class="row g-3">
             <div class="col-auto">

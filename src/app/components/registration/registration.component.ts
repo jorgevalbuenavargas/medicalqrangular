@@ -185,7 +185,7 @@ export class RegistrationComponent implements OnInit {
       this.appComponent.profile = this.loggedProfile
       this.appComponent.loggedId = newAdmin.id
       this.appComponent.userEmail = newAdmin.email
-      this.router.navigate(['/adminPrescriptions'])
+      this.router.navigate(['/adminDoctors'])
     })
   }
   

@@ -40,8 +40,8 @@
                             <tr *ngFor="let filteredUniqueIdentifierCodeByDoctor of filteredUniqueIdentifierCodesByDoctor; let i = index">                                
                                 <td><qrcode [qrdata]="filteredUniqueIdentifierCodeByDoctor.id!" [scale]="2" [width]="1" [errorCorrectionLevel]="'M'"></qrcode></td>
                                 <td>{{ filteredUniqueIdentifierCodeByDoctor.id }}</td>
-                                <td>{{ filteredUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy HH:mm:ss" }}</td>
-                                <td>{{ filteredUniqueIdentifierCodeByDoctor.modificationDate | date : "dd/MM/yyyy HH:mm:ss" }}</td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.creationDate | date : "dd/MM/yyyy" }}</td>
+                                <td>{{ filteredUniqueIdentifierCodeByDoctor.modificationDate | date : "dd/MM/yyyy" }}</td>
                                 <td>{{ filteredUniqueIdentifierCodeByDoctor.status }}</td>                                
                                 <td>
                                     <button *ngIf="filteredUniqueIdentifierCodeByDoctor.status !== 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateUIC(filteredUniqueIdentifierCodeByDoctor.id!, 'Activo', filteredUniqueIdentifierCodeByDoctor.creationDate!, filteredUniqueIdentifierCodeByDoctor.doctorId!, 'Activo')"><i-bs name="eye-fill"></i-bs></button>

@@ -21,6 +21,7 @@ import { AdminMedicalreceiptsComponent } from './components/admin-medicalreceipt
 import { RegistrationComponent } from './components/registration/registration.component';
 import { LoginComponent } from './components/login/login.component';
 import { AdminProfileComponent } from './components/admin-profile/admin-profile.component';
+import { PharmacyMedicalPrescriptionsComponent } from './components/pharmacy-medical-prescriptions/pharmacy-medical-prescriptions.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { AdminProfileComponent } from './components/admin-profile/admin-profile.
     AdminMedicalreceiptsComponent,
     RegistrationComponent,
     LoginComponent,
-    AdminProfileComponent,    
+    AdminProfileComponent,
+    PharmacyMedicalPrescriptionsComponent,    
   ],
   imports: [
     BrowserModule,
