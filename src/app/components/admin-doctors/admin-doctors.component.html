@@ -62,8 +62,8 @@
                             <td>{{ obtainedDoctor.creationDate | date : "dd/MM/yyyy" }}</td>
                             <td>{{ obtainedDoctor.Status }}</td>                            
                             <td>
-                                <button *ngIf="obtainedDoctor.Status != 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Activo',obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!, obtainedDoctor.creationDate!)"><i-bs name="eye-fill"></i-bs></button>
-                                <button *ngIf="obtainedDoctor.Status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Inactivo', obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!, obtainedDoctor.creationDate!)"><i-bs name="eye-slash-fill"></i-bs></button>
+                                <button *ngIf="obtainedDoctor.Status != 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Activo',obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!, obtainedDoctor.creationDate!, obtainedDoctor.GmailID!, obtainedDoctor.FacebookID!)"><i-bs name="eye-fill"></i-bs></button>
+                                <button *ngIf="obtainedDoctor.Status == 'Activo'" type="button" class="btn btn-warning" (click)="onUpdateDoctor(obtainedDoctor.id!, 'Inactivo', obtainedDoctor.name!, obtainedDoctor.lastName!, obtainedDoctor.medicalLicense!, obtainedDoctor.email!, obtainedDoctor.creationDate!, obtainedDoctor.GmailID!, obtainedDoctor.FacebookID!)"><i-bs name="eye-slash-fill"></i-bs></button>
                             </td>
                         </tr>
                     </tbody>

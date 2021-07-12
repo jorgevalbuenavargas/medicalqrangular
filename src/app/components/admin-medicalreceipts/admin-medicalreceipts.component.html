@@ -1,0 +1,60 @@
+<div class="container" *ngIf="loggedProfile !== 'Admin'">
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
+</div>
+
+<div class="container mt-4" #alertContainer></div>
+
+<div class="container" *ngIf="loggedProfile == 'Admin'">
+    <div class="container p-4">
+        <form #filterDates="ngForm" (ngSubmit)="submit(filterDates)" class="row g-3">
+            <div class="col-auto">
+              <label for="fromDate" class="form-label">Fecha Desde:</label>
+              <input type="date" name="fromDate" class="form-control" required value="01/01/1900" ngModel>
+            </div>
+            <div class="col-auto">
+              <label for="toDate" class="form-label">Fecha Hasta:</label>
+              <input type="date" name="toDate" class="form-control" required ngModel>
+            </div>
+            <div class="col-auto d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg"><h4>Filtrar</h4></button>
+            </div>
+        </form>
+    </div>
+    <div class="container p-4">
+        <div class='row justify-content-end'>
+            <div class="col-12">
+                <button class="btn btn-secondary m-2" (click)="exportexcel()">Descargar XLSX</button>
+            </div>
+        </div>
+    </div> 
+    <div class="container m-2">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped" id="excel-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre de fantasia</th>  
+                            <th>Razón social</th>                              
+                            <th>Doctor</th>        
+                            <th>Fecha de validación</th>            
+                            <th>Resultado de validación</th>
+                            <th>Mensaje de validación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let obtainedMedicalReceipt of customizeMedicalReceipts; let i = index">                        
+                            <td>{{ obtainedMedicalReceipt.pharmacyBusinessName! }}</td>    
+                            <td>{{ obtainedMedicalReceipt.pharmacyCompanyName! }}</td>
+                            <td>{{ obtainedMedicalReceipt.doctorName! }}</td>
+                            <td>{{ obtainedMedicalReceipt.scanDate! | date : "dd/MM/yyyy HH:mm:ss" }}</td>
+                            <td>{{ obtainedMedicalReceipt.validationResult! }}</td>
+                            <td>{{ obtainedMedicalReceipt.applicationMessage! }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

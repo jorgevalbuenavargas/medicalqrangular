@@ -29,14 +29,24 @@ export class SecuritycodesComponent implements OnInit {
     this.loggedProfile = this.appComponent.profile;
     this.loggedDoctorEmail = this.appComponent.userEmail;
     this.getSecurityCodeByDoctorId();
+    this.createAlertMessage("¡Bienvenido!")
   }
 
   createAlertMessage(alertMessage : string){
     this.newAlertElement = document.createElement("div");
     this.newAlertElement.innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' + 
     alertMessage + 
-    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    '<button id="closeButton" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
     this.titleContainer.nativeElement.appendChild(this.newAlertElement);
+    this.closeAlertMessage();
+  }
+
+  closeAlertMessage() {
+    setTimeout( () => { 
+      let closeButton : HTMLElement = document.getElementById("closeButton") as HTMLElement;
+      //console.log(closeButton)
+      closeButton.click();
+      }, 5000);
   }
 
   getSecurityCodeByDoctorId() {
@@ -57,7 +67,8 @@ export class SecuritycodesComponent implements OnInit {
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * 999999)).toString(),
       expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
-      doctorId: this.loggedDoctorId
+      doctorId: this.loggedDoctorId,
+      creationDate: new Date()
     }
     this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(data => {      
       let createdSecurityCode : SecurityCodeI = data;

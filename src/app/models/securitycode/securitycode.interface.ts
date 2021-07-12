@@ -5,4 +5,5 @@ export interface SecurityCodeI {
     securityNumber: string;
     expirationDate: Date;
     doctorId: string;
+    creationDate: Date;
 }

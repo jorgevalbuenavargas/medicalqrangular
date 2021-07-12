@@ -5,13 +5,17 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li *ngIf="profile == 'Doctor'" class="nav-item"><a class="nav-link active" aria-current="page" href="#!" routerLink="/cui" routerLinkActive="active">CUI</a></li>
-                <li *ngIf="profile == 'Doctor'" class="nav-item"><a class="nav-link" href="#!" routerLink="/securitycode" routerLinkActive="active" >Código de seguridad</a></li>
-                <li *ngIf="profile == 'Doctor'" class="nav-item"><a class="nav-link" href="#!" routerLink="/doctorProfile" routerLinkActive="active" >Perfil</a></li>
-                <li *ngIf="profile == 'Farmacia'" class="nav-item"><a class="nav-link" href="#!" routerLink="/medicalPrescriptions" routerLinkActive="active" >Prescripciones médicas</a></li>
-                <li *ngIf="profile == 'Farmacia'" class="nav-item"><a class="nav-link" href="#!" routerLink="/pharmacyProfile" routerLinkActive="active" >Perfil</a></li>                
-                <li *ngIf="profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminDoctors" routerLinkActive="active" >Doctores</a></li>
-                <li *ngIf="profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminPharmacies" routerLinkActive="active" >Farmacias</a></li>
+                <li *ngIf="appComponent.profile == 'Doctor'" class="nav-item"><a class="nav-link active" aria-current="page" href="#!" routerLink="/cui" routerLinkActive="active">CUI</a></li>
+                <li *ngIf="appComponent.profile == 'Doctor'" class="nav-item"><a class="nav-link" href="#!" routerLink="/securitycode" routerLinkActive="active" >Código de seguridad</a></li>
+                <li *ngIf="appComponent.profile == 'Doctor'" class="nav-item"><a class="nav-link" href="#!" routerLink="/doctorProfile" routerLinkActive="active" >Perfil</a></li>
+                <li *ngIf="appComponent.profile == 'Farmacia'" class="nav-item"><a class="nav-link" href="#!" routerLink="/medicalPrescriptions" routerLinkActive="active" >Prescripciones médicas</a></li>
+                <li *ngIf="appComponent.profile == 'Farmacia'" class="nav-item"><a class="nav-link" href="#!" routerLink="/pharmacyProfile" routerLinkActive="active" >Perfil</a></li>                
+                <li *ngIf="appComponent.profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminDoctors" routerLinkActive="active" >Doctores</a></li>
+                <li *ngIf="appComponent.profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminPharmacies" routerLinkActive="active" >Farmacias</a></li>
+                <li *ngIf="appComponent.profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminPrescriptions" routerLinkActive="active" >Prescripciones médicas</a></li>
+                <li *ngIf="appComponent.profile == 'Admin'" class="nav-item"><a class="nav-link" href="#!" routerLink="/adminProfile" routerLinkActive="active" >Perfil</a></li>                
+                <li *ngIf="appComponent.profile == ''" class="nav-item"><a class="nav-link" href="#!" routerLink="/login" routerLinkActive="active" >Iniciar sesión</a></li>
+                <li *ngIf="appComponent.profile !== ''" class="nav-item"><a class="nav-link" routerLinkActive="active" (click)='logOff()'>Cerrar sesión</a></li>
             </ul>
         </div>
     </div>

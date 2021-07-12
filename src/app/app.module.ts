@@ -17,6 +17,10 @@ import { DoctorProfileComponent } from './components/doctor-profile/doctor-profi
 import { PharmacyProfileComponent } from './components/pharmacy-profile/pharmacy-profile.component';
 import { MedicalPrescriptionsComponent } from './components/medical-prescriptions/medical-prescriptions.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AdminMedicalreceiptsComponent } from './components/admin-medicalreceipts/admin-medicalreceipts.component';
+import { RegistrationComponent } from './components/registration/registration.component';
+import { LoginComponent } from './components/login/login.component';
+import { AdminProfileComponent } from './components/admin-profile/admin-profile.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +33,11 @@ import { ReactiveFormsModule } from '@angular/forms';
     AdminPharmaciesComponent,
     DoctorProfileComponent,
     PharmacyProfileComponent,
-    MedicalPrescriptionsComponent
+    MedicalPrescriptionsComponent,
+    AdminMedicalreceiptsComponent,
+    RegistrationComponent,
+    LoginComponent,
+    AdminProfileComponent,    
   ],
   imports: [
     BrowserModule,

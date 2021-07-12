@@ -1,13 +1,10 @@
 import { Guid } from "guid-typescript"
 
-export interface DoctorI {
+export interface AdminI {
     id?: string;
     name: string;
     lastName: string;
-    medicalLicense: string;
-    Status: string;
     email: string;
-    creationDate : Date,
     GmailID: string;
     FacebookID: string
 }

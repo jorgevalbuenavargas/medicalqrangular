@@ -49,8 +49,17 @@ export class UicComponent implements OnInit {
     this.newAlertElement = document.createElement("div");
     this.newAlertElement.innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' + 
     alertMessage + 
-    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    '<button id="closeButton" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
     this.titleContainer.nativeElement.appendChild(this.newAlertElement);
+    this.closeAlertMessage();
+  }
+
+  closeAlertMessage() {
+    setTimeout( () => { 
+      let closeButton : HTMLElement = document.getElementById("closeButton") as HTMLElement;
+      //console.log(closeButton)
+      closeButton.click();
+      }, 5000);
   }
 
   getUICByDoctorId(filteredStatus : string) {

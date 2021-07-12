@@ -60,6 +60,10 @@ export class DoctorDataService {
     return this.http.post(this.urlAPI_UIC, newUniqueIdentifierCode)
   }
 
+  addNewDoctor(newDoctor : DoctorI): Observable<any> {
+    return this.http.post(this.urlAPI_Doctors, newDoctor)
+  }
+
   updateUIC(modifiedUniqueIdentifierCode : UniqueIdentifierCodeI, modifiedUniqueIdentifierCodeID : String): Observable<any> {
     return this.http.put(this.urlAPI_UIC + "/" + modifiedUniqueIdentifierCodeID, modifiedUniqueIdentifierCode)
   }

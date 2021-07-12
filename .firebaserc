@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "medicalqr-42850": {
+      "hosting": {
+        "medicalqrangular": [
+          "medicalqr-42850"
+        ]
+      }
+    }
+  }
+}

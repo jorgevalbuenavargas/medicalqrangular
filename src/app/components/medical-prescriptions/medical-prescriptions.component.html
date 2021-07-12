@@ -4,7 +4,7 @@
     </div>
 </div>
 
-<div class="container mt-4" #alertContainer>
+<div class="container mt-4" #alertContainer *ngIf="loggedProfile == 'Farmacia'">
     <h3>Validación de prescripciones médicas</h3>
 </div>
 
@@ -15,15 +15,25 @@
         <form [formGroup]="medicalPrescriptionForm" (ngSubmit)="onSubmit()" class="row g-3">
             <div class="col-12">
                 <label for="uic" class="form-label">Código QR:</label>
-                <input id="uic" type="text" class="form-control" formControlName="uic" required>
+                <input id="uic" type="text" class="form-control" formControlName="uic" required (change)='onChange()'>
             </div>  
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <p>Doctor: {{ doctorName }}</p>
+                    <p>Licencia médica: {{ doctorMedicalLicense }}</p>
+                </div>
+                <div class="col-6" *ngIf="medicalPrescriptionForm.controls.uic.touched">                
+                    <qrcode [qrdata]="medicalPrescriptionForm.controls.uic.value" [scale]="4" [width]="1" [errorCorrectionLevel]="'M'"></qrcode>
+                </div>                
+            </div>
             <div *ngIf="medicalPrescriptionForm.controls.uic.touched && medicalPrescriptionForm.controls.uic.invalid">
                 <div *ngIf="medicalPrescriptionForm.controls.uic.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Lea un Código QR a través de su lector de Código de barras</div>                
             </div>
             <div class="col-md-6">
                 <label for="securityCode" class="form-label">Código Seguridad:</label>
                 <input id="securityCode" type="number" class="form-control" formControlName="securityCode" required >
-            </div>           
+            </div>         
+
             <div class="col-md-6">
                 <label for="expirationDate" class="form-label">Fecha Vigencia:</label>
                 <input id="expirationDate" type="date" class="form-control" formControlName="expirationDate" required >

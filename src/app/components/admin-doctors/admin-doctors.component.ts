@@ -45,8 +45,17 @@ export class AdminDoctorsComponent implements OnInit {
     this.newAlertElement = document.createElement("div");
     this.newAlertElement.innerHTML = '<div class="alert alert-'+alertType+' alert-dismissible fade show" role="alert">' + 
     alertMessage + 
-    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    '<button id="closeButton" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
     this.titleContainer.nativeElement.appendChild(this.newAlertElement);
+    this.closeAlertMessage();
+  }
+
+  closeAlertMessage() {
+    setTimeout( () => { 
+      let closeButton : HTMLElement = document.getElementById("closeButton") as HTMLElement;
+      //console.log(closeButton)
+      closeButton.click();
+      }, 5000);
   }
 
   getDoctors() {
@@ -104,14 +113,16 @@ export class AdminDoctorsComponent implements OnInit {
         
   }
 
-  onUpdateDoctor(receivedId: string, receivedStatus : string, receivedName : string, receivedLastName : string, receivedMedicalLicense : string, receivedEmail : string, receivedCreationDate : Date): void {
+  onUpdateDoctor(receivedId: string, receivedStatus : string, receivedName : string, receivedLastName : string, receivedMedicalLicense : string, receivedEmail : string, receivedCreationDate : Date, receivedGmailID : string, receivedFacebookID : string): void {
     const actualDoctor = {
       name : receivedName,
       lastName : receivedLastName,
       medicalLicense : receivedMedicalLicense,
       Status : receivedStatus,
       email : receivedEmail,
-      creationDate: receivedCreationDate
+      creationDate: receivedCreationDate,
+      GmailID: receivedGmailID,
+      FacebookID: receivedFacebookID
     }
     this.doctorService.updateDoctor(actualDoctor, receivedId).subscribe(data => {
       //this.getDoctors(receivedStatus);
@@ -141,7 +152,8 @@ export class AdminDoctorsComponent implements OnInit {
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * (999999 - 100000 + 1) + 100000).toString()),
       expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
-      doctorId: filteredDoctorId
+      doctorId: filteredDoctorId,
+      creationDate: new Date()
     }   
     this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(securityCodeData => {
       let createdSecurityCode : SecurityCodeI = securityCodeData;

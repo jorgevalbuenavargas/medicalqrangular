@@ -1,0 +1,113 @@
+<div class="container" *ngIf="loggedProfile !== 'Farmacia'">
+    <div class="container p-4">
+        <p>No posee autorización para acceder a este recurso</p>
+    </div>
+</div>
+
+
+<div class="container mt-4" #alertContainer></div>
+
+<div class="container" *ngIf="loggedProfile == 'Farmacia'">
+    <div class="container p-4">
+        <form [formGroup]="registrationForm" class="row g-3">
+            <div class="col-6">
+                <label for="user" class="form-label">Tipo de usuario:</label>                
+                <select id="user" class="form-select" formControlName="user" required (change)="showForm()">
+                    <option selected>Seleccione...</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Farmacia">Farmacia</option>
+                    <option value="Admin">Administrador</option>
+                </select>
+            </div>
+        </form>
+        <form [formGroup]="doctorRegistrationForm" (ngSubmit)="onSubmit()" class="row g-3 mt-4" *ngIf="selectedProfile == 'Doctor'">
+            <div class="col-md-12">
+                <label for="doctorMedicalLicense" class="form-label">Licencia médica:</label>
+                <input id="doctorMedicalLicense" type="text" minlength="6" class="form-control" formControlName="doctorMedicalLicense" required (change)='onMedicalLiceseChange()'>
+            </div>  
+            <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.touched && doctorRegistrationForm.controls.doctorMedicalLicense.invalid">
+                <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique una Licencia médica</div>                
+                <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">La licencia médica debe ser de al menos 6 caracteres</div>
+            </div>
+            <div *ngIf="doctorRegistrationForm.controls.doctorMedicalLicense.touched">
+                <div *ngIf="!validMedicalLicense" class="alert alert-warning alert-dismissible fade show" role="alert">La Licencia médica ya se encuentra en uso.</div>                
+            </div>
+            <div class="col-md-12" >
+                <label for="doctorName" class="form-label">Nombre(s):</label>
+                <input id="doctorName" type="text" minlength="3" class="form-control" formControlName="doctorName" required >
+            </div>
+            <div *ngIf="doctorRegistrationForm.controls.doctorName.touched && doctorRegistrationForm.controls.doctorName.invalid">
+                <div *ngIf="doctorRegistrationForm.controls.doctorName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su(s) nombre(s)</div>                
+                <div *ngIf="doctorRegistrationForm.controls.doctorName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El nombre debe tener al menos 3 caracteres</div>
+            </div>  
+            <div class="col-md-12">
+                <label for="doctorLastName" class="form-label">Apellido(s):</label>
+                <input id="doctorLastName" type="text" minlength="3" class="form-control" formControlName="doctorLastName" required >
+            </div> 
+            <div *ngIf="doctorRegistrationForm.controls.doctorLastName.touched && doctorRegistrationForm.controls.doctorLastName.invalid">
+                <div *ngIf="doctorRegistrationForm.controls.doctorLastName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su(s) apellido(s)</div>                
+                <div *ngIf="doctorRegistrationForm.controls.doctorLastName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El apellido debe tener al menos 3 caracteres</div>
+            </div>             
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-success" [disabled]="!doctorRegistrationForm.valid"><h4>Registrar</h4></button>                
+            </div>
+        </form>
+        <form [formGroup]="pharmacyRegistrationForm" (ngSubmit)="onPharmacySubmit()" class="row g-3 mt-4" *ngIf="selectedProfile == 'Farmacia'">
+            <div class="col-md-12">
+                <label for="pharmacyCUIT" class="form-label">CUIT:</label>
+                <input id="pharmacyCUIT" type="text" minlength="11" class="form-control" formControlName="pharmacyCUIT" required (change)='onCUITChange()'>
+            </div>  
+            <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.touched && pharmacyRegistrationForm.controls.pharmacyCUIT.invalid">
+                <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique un número de CUIT</div>                
+                <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El número de CUIT debe ser de al menos 11 caracteres</div>
+            </div>
+            <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.touched">
+                <div *ngIf="!validCUIT" class="alert alert-warning alert-dismissible fade show" role="alert">El número de CUIT ya se encuentra en uso.</div>                
+            </div>
+            <div class="col-md-12" >
+                <label for="companyName" class="form-label">Razón Social:</label>
+                <input id="companyName" type="text" minlength="3" class="form-control" formControlName="companyName" required >
+            </div>  
+            <div *ngIf="pharmacyRegistrationForm.controls.companyName.touched && pharmacyRegistrationForm.controls.companyName.invalid">
+                <div *ngIf="pharmacyRegistrationForm.controls.companyName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su Razón Social</div>                
+                <div *ngIf="pharmacyRegistrationForm.controls.companyName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">La Razón Social debe tener al menos 3 caracteres</div>
+            </div> 
+            <div class="col-md-12">
+                <label for="businessName" class="form-label">Nombre de fantasía:</label>
+                <input id="businessName" type="text" minlength="3" class="form-control" formControlName="businessName" required >
+            </div>    
+            <div *ngIf="pharmacyRegistrationForm.controls.businessName.touched && pharmacyRegistrationForm.controls.businessName.invalid">
+                <div *ngIf="pharmacyRegistrationForm.controls.businessName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su Nombre de fantasía</div>                
+                <div *ngIf="pharmacyRegistrationForm.controls.businessName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El Nombre de fantasía debe tener al menos 3 caracteres</div>
+            </div>          
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-success" [disabled]="!pharmacyRegistrationForm.valid"><h4>Registrar</h4></button>                
+            </div>
+        </form>
+
+        <form [formGroup]="adminRegistrationForm" (ngSubmit)="onAdminSubmit()" class="row g-3 mt-4" *ngIf="selectedProfile == 'Admin'">
+            <div class="alert alert-danger" role="alert">
+                La creación de usuarios de Administrador es solo para fines de la presentación del proyecto
+            </div>
+            <div class="col-md-12" >
+                <label for="adminName" class="form-label">Nombres(s):</label>
+                <input id="adminName" type="text" minlength="3" class="form-control" formControlName="adminName" required >
+            </div>  
+            <div *ngIf="adminRegistrationForm.controls.adminName.touched && adminRegistrationForm.controls.adminName.invalid">
+                <div *ngIf="adminRegistrationForm.controls.adminName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su(s) nombre(s)</div>                
+                <div *ngIf="adminRegistrationForm.controls.adminName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El nombre debe tener al menos 3 caracteres</div>
+            </div> 
+            <div class="col-md-12">
+                <label for="adminLastName" class="form-label">Apellido(s):</label>
+                <input id="adminLastName" type="text" minlength="3" class="form-control" formControlName="adminLastName" required >
+            </div>    
+            <div *ngIf="adminRegistrationForm.controls.adminLastName.touched && adminRegistrationForm.controls.adminLastName.invalid">
+                <div *ngIf="adminRegistrationForm.controls.adminLastName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su(s) apellido(s)</div>                
+                <div *ngIf="adminRegistrationForm.controls.adminLastName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El apellido debe tener al menos 3 caracteres</div>
+            </div>          
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-success" [disabled]="!adminRegistrationForm.valid"><h4>Registrar</h4></button>                
+            </div>
+        </form>
+    </div>
+</div>
