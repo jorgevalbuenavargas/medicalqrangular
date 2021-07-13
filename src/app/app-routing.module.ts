@@ -14,6 +14,7 @@ import { AdminProfileComponent } from './components/admin-profile/admin-profile.
 import { PharmacyMedicalPrescriptionsComponent } from './components/pharmacy-medical-prescriptions/pharmacy-medical-prescriptions.component';
 
 const routes: Routes = [
+  {path: '',  redirectTo: 'login',  pathMatch: 'full'},
   {path: 'cui', component: UicComponent},
   {path: 'securitycode', component: SecuritycodesComponent},
   {path: 'adminDoctors', component: AdminDoctorsComponent},
@@ -22,7 +23,7 @@ const routes: Routes = [
   {path: 'pharmacyProfile', component: PharmacyProfileComponent},
   {path: 'medicalPrescriptions', component: MedicalPrescriptionsComponent},
   {path: 'adminPrescriptions', component: AdminMedicalreceiptsComponent},
-  {path: 'registration', component: RegistrationComponent},
+  {path: 'registration/:id', component: RegistrationComponent},
   {path: 'login', component: LoginComponent},
   {path: 'adminProfile', component: AdminProfileComponent},
   {path: 'pharmacyMedicalPrescriptions', component: PharmacyMedicalPrescriptionsComponent},

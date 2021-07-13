@@ -2,12 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+    .intro-2 {
+      /*background: url("https://mdbootstrap.com/img/Photos/Others/architecture.jpg")no-repeat center center;*/
+      /*background: url("../../medicalqrangular/src/assets/images/back.jpg");*/
+      /*background-image: url("../src/assets/images/back.jpg");*/
+      background-image: url(assets/images/back.jpg);
+      /* Full height */
+      height: 100%;
+
+    /* Center and scale the image nicely */
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  </style>
   <title>Medicalqrangular</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <app-root></app-root>
+  <div class="intro-2">
+    <app-root></app-root>
+  </div>
 </body>
 </html>

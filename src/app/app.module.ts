@@ -22,6 +22,40 @@ import { RegistrationComponent } from './components/registration/registration.co
 import { LoginComponent } from './components/login/login.component';
 import { AdminProfileComponent } from './components/admin-profile/admin-profile.component';
 import { PharmacyMedicalPrescriptionsComponent } from './components/pharmacy-medical-prescriptions/pharmacy-medical-prescriptions.component';
+import {firebase, firebaseui, FirebaseUIModule} from 'firebaseui-angular';
+import {AngularFireModule} from '@angular/fire';
+import {AngularFireAuthModule, USE_EMULATOR as USE_AUTH_EMULATOR} from '@angular/fire/auth';
+import {environment} from '../assets/environments/environment';
+
+const firebaseUiAuthConfig: firebaseui.auth.Config = {
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    {
+      scopes: [
+        'public_profile',
+        'email',
+        'user_likes',
+        'user_friends'
+      ],
+      customParameters: {
+        'auth_type': 'reauthenticate'
+      },
+      provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID
+    },
+    //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    //firebase.auth.GithubAuthProvider.PROVIDER_ID,
+    /*{
+      requireDisplayName: false,
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID
+    },*/
+    //firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+    //firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+  ],
+  //tosUrl: '<your-tos-link>',
+  //privacyPolicyUrl: '<your-privacyPolicyUrl-link>',
+  //credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO
+};
 
 @NgModule({
   declarations: [
@@ -48,7 +82,10 @@ import { PharmacyMedicalPrescriptionsComponent } from './components/pharmacy-med
     QRCodeModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxBootstrapIconsModule.pick(allIcons)
+    NgxBootstrapIconsModule.pick(allIcons),
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireAuthModule,
+    FirebaseUIModule.forRoot(firebaseUiAuthConfig)
   ],
   providers: [],
   bootstrap: [AppComponent]

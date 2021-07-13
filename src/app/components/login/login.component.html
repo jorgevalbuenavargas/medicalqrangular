@@ -1,1 +1,32 @@
-<p>login works!</p>
+<div class="container mt-4  text-center">
+    <img src="/assets/images/logo.png" class="center">
+</div>
+
+<div class="container" *ngIf="appComponent.loggedId !== ''">
+    <div class="container p-4 text-center">
+        <h3>Ya ha iniciado sesión en este dispositivo</h3>
+    </div>
+</div>
+
+<div class="container mt-4" #alertContainer></div>
+
+<div class="container" *ngIf="appComponent.loggedId == ''">
+    <div class="col-12 p-4">
+        <h4 class="text-center">Inicio de sesión</h4>
+        <form [formGroup]="registrationForm" class="row g-3 mt-4 justify-content-center">
+            <div class="col-6">
+                <label for="user" class="form-label">Seleccione el rol del usuario:</label>                
+                <select id="user" class="form-select" formControlName="user" required (change)="showForm()">
+                    <option selected>Seleccione...</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Farmacia">Farmacia</option>
+                    <option value="Admin">Administrador</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container mt-4" *ngIf="selectedProfile !== ''">
+    <firebase-ui></firebase-ui>
+</div>
+

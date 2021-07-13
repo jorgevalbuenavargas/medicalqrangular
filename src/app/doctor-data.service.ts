@@ -3,16 +3,18 @@ import { UniqueIdentifierCodeI } from '../app/models/uic/uic.interface';
 import { SecurityCodeI } from '../app/models/securitycode/securitycode.interface';
 import { DoctorI } from '../app/models/doctor/doctor.interface';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http';
+import {environment} from '../assets/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DoctorDataService {
 
-  private urlAPI_UIC = 'https://localhost:44355/api/UniqueIdentifierCodes';
-  private urlAPI_SC = 'https://localhost:44355/api/SecurityCodes';
-  private urlAPI_Doctors = 'https://localhost:44355/api/Doctors';
+  private endpoint = environment.restService
+  private urlAPI_UIC = this.endpoint + '/api/UniqueIdentifierCodes';
+  private urlAPI_SC = this.endpoint + '/api/SecurityCodes';
+  private urlAPI_Doctors = this.endpoint + '/api/Doctors';
 
   constructor(private http: HttpClient) { }
 
@@ -22,6 +24,10 @@ export class DoctorDataService {
 
   getDoctorById(doctorId : string):Observable<DoctorI> {
     return this.http.get<DoctorI>(this.urlAPI_Doctors + "/" + doctorId)
+  }
+
+  getDoctorByProvider(providerId : string):Observable<DoctorI[]> {
+    return this.http.get<DoctorI[]>(this.urlAPI_Doctors  + "?providerId=" + providerId)
   }
 
   updateDoctor(modifiedDoctor : DoctorI, modifiedDoctorID : String): Observable<any> {

@@ -1,15 +1,16 @@
-<div class="container" *ngIf="loggedProfile !== 'Farmacia'">
-    <div class="container p-4">
-        <p>No posee autorización para acceder a este recurso</p>
+<div class="container" *ngIf="loggedProfile !== ''">
+    <div class="container p-4 text-center">
+        <h3>No posee autorización para acceder a este recurso</h3>
     </div>
 </div>
 
 
 <div class="container mt-4" #alertContainer></div>
 
-<div class="container" *ngIf="loggedProfile == 'Farmacia'">
+<div class="container" *ngIf="loggedProfile == ''">
     <div class="container p-4">
-        <form [formGroup]="registrationForm" class="row g-3">
+        <h4 class="text-center">Registro de nuevo usuario</h4>
+        <form [formGroup]="registrationForm" class="row g-3 mt-4">
             <div class="col-6">
                 <label for="user" class="form-label">Tipo de usuario:</label>                
                 <select id="user" class="form-select" formControlName="user" required (change)="showForm()">
@@ -47,6 +48,14 @@
             <div *ngIf="doctorRegistrationForm.controls.doctorLastName.touched && doctorRegistrationForm.controls.doctorLastName.invalid">
                 <div *ngIf="doctorRegistrationForm.controls.doctorLastName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su(s) apellido(s)</div>                
                 <div *ngIf="doctorRegistrationForm.controls.doctorLastName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El apellido debe tener al menos 3 caracteres</div>
+            </div>
+            <div class="col-md-12">
+                <label for="doctorEmail" class="form-label">Email:</label>
+                <input id="doctorEmail" type="email" class="form-control" formControlName="doctorEmail" required >
+            </div> 
+            <div *ngIf="doctorRegistrationForm.controls.doctorEmail.touched && doctorRegistrationForm.controls.doctorEmail.invalid">
+                <div *ngIf="doctorRegistrationForm.controls.doctorEmail.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su dirección de mail</div>                
+                <div *ngIf="doctorRegistrationForm.controls.doctorEmail.errors?.pattern" class="alert alert-warning alert-dismissible fade show" role="alert">Ingrese una dirección de correo válida</div>
             </div>             
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button type="submit" class="btn btn-success" [disabled]="!doctorRegistrationForm.valid"><h4>Registrar</h4></button>                
@@ -79,7 +88,15 @@
             <div *ngIf="pharmacyRegistrationForm.controls.businessName.touched && pharmacyRegistrationForm.controls.businessName.invalid">
                 <div *ngIf="pharmacyRegistrationForm.controls.businessName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su Nombre de fantasía</div>                
                 <div *ngIf="pharmacyRegistrationForm.controls.businessName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El Nombre de fantasía debe tener al menos 3 caracteres</div>
-            </div>          
+            </div>
+            <div class="col-md-12">
+                <label for="pharmacyEmail" class="form-label">Email:</label>
+                <input id="pharmacyEmail" type="email" class="form-control" formControlName="pharmacyEmail" required >
+            </div> 
+            <div *ngIf="pharmacyRegistrationForm.controls.pharmacyEmail.touched && pharmacyRegistrationForm.controls.pharmacyEmail.invalid">
+                <div *ngIf="pharmacyRegistrationForm.controls.pharmacyEmail.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su dirección de mail</div>                
+                <div *ngIf="pharmacyRegistrationForm.controls.pharmacyEmail.errors?.pattern" class="alert alert-warning alert-dismissible fade show" role="alert">Ingrese una dirección de correo válida</div>
+            </div>           
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button type="submit" class="btn btn-success" [disabled]="!pharmacyRegistrationForm.valid"><h4>Registrar</h4></button>                
             </div>
@@ -104,7 +121,15 @@
             <div *ngIf="adminRegistrationForm.controls.adminLastName.touched && adminRegistrationForm.controls.adminLastName.invalid">
                 <div *ngIf="adminRegistrationForm.controls.adminLastName.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su(s) apellido(s)</div>                
                 <div *ngIf="adminRegistrationForm.controls.adminLastName.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El apellido debe tener al menos 3 caracteres</div>
-            </div>          
+            </div>     
+            <div class="col-md-12">
+                <label for="adminEmail" class="form-label">Email:</label>
+                <input id="adminEmail" type="email" class="form-control" formControlName="adminEmail" required >
+            </div> 
+            <div *ngIf="adminRegistrationForm.controls.adminEmail.touched && adminRegistrationForm.controls.adminEmail.invalid">
+                <div *ngIf="adminRegistrationForm.controls.adminEmail.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique su dirección de mail</div>                
+                <div *ngIf="adminRegistrationForm.controls.adminEmail.errors?.pattern" class="alert alert-warning alert-dismissible fade show" role="alert">Ingrese una dirección de correo válida</div>
+            </div>        
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button type="submit" class="btn btn-success" [disabled]="!adminRegistrationForm.valid"><h4>Registrar</h4></button>                
             </div>

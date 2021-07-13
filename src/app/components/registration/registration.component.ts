@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DoctorDataService } from '../../doctor-data.service';
 import { PharmacyDataService } from 'src/app/pharmacy-data.service';
 import { AdminDataService } from 'src/app/admin-data.service';
@@ -9,7 +9,11 @@ import { PharmacyI } from 'src/app/models/pharmacy/pharmacy.interface';
 import { Guid } from "guid-typescript"
 import { SecurityCodeI } from 'src/app/models/securitycode/securitycode.interface';
 import { AdminI } from 'src/app/models/admin/admin.interface';
-import {Router} from "@angular/router"
+import {Router, ActivatedRoute} from "@angular/router"
+import {AngularFireAuth} from '@angular/fire/auth';
+import * as CryptoJS from 'crypto-js'; 
+import {environment} from '../../../assets/environments/environment';
+
 
 @Component({
   selector: 'app-registration',
@@ -20,10 +24,16 @@ export class RegistrationComponent implements OnInit {
 
   loggedProfile = '';
   selectedProfile = '';
+  gmailId = ''
   validMedicalLicense = true;
   validCUIT = true;
+  @ViewChild('alertContainer', { static: true }) 
+  public titleContainer: any;
+  public newAlertElement: any;
+  private secretKey = environment.secretKey
+  
 
-  constructor(private adminService : AdminDataService, private doctorService : DoctorDataService, private appComponent : AppComponent, private pharmacyService : PharmacyDataService, private router: Router) { }
+  constructor(private angularFireAuth : AngularFireAuth, private adminService : AdminDataService, private doctorService : DoctorDataService, private appComponent : AppComponent, private pharmacyService : PharmacyDataService, private router: Router, private route: ActivatedRoute) { }
 
   registrationForm = new FormGroup({
     user: new FormControl(''),
@@ -32,23 +42,30 @@ export class RegistrationComponent implements OnInit {
   doctorRegistrationForm = new FormGroup({
     doctorName: new FormControl({value: '', disabled: true}, Validators.required),
     doctorLastName: new FormControl({value: '', disabled: true}, Validators.required),
+    doctorEmail: new FormControl({value: '', disabled: true}, [ Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]),
     doctorMedicalLicense: new FormControl(''),
   });
 
   pharmacyRegistrationForm = new FormGroup({
     companyName: new FormControl({value: '', disabled: true}, Validators.required),
     businessName: new FormControl({value: '', disabled: true}, Validators.required),
+    pharmacyEmail: new FormControl({value: '', disabled: true}, [ Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]),
     pharmacyCUIT: new FormControl(''),
   });
 
   adminRegistrationForm = new FormGroup({
     adminName: new FormControl(''),
     adminLastName: new FormControl(''),
+    adminEmail: new FormControl('', [ Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]),
   });
 
 
   ngOnInit(): void {
-    this.loggedProfile = this.appComponent.profile;
+    this.gmailId = this.route.snapshot.paramMap.get('id')!
+    this.gmailId = CryptoJS.AES.decrypt(this.gmailId, this.secretKey).toString(CryptoJS.enc.Utf8)
+    if (this.gmailId == ''){
+      this.router.navigate(['/login'])
+    }    
   }
 
   onMedicalLiceseChange(){
@@ -65,10 +82,12 @@ export class RegistrationComponent implements OnInit {
         if (this.validMedicalLicense) {
           this.doctorRegistrationForm.controls.doctorName.enable()
           this.doctorRegistrationForm.controls.doctorLastName.enable()
+          this.doctorRegistrationForm.controls.doctorEmail.enable()
         } else {
           this.doctorRegistrationForm.controls.doctorMedicalLicense.setErrors({'incorrect': true});
           this.doctorRegistrationForm.controls.doctorName.disable()
           this.doctorRegistrationForm.controls.doctorLastName.disable()
+          this.doctorRegistrationForm.controls.doctorEmail.disable()
         }
       })
     }    
@@ -88,10 +107,12 @@ export class RegistrationComponent implements OnInit {
         if (this.validCUIT) {
           this.pharmacyRegistrationForm.controls.companyName.enable()
           this.pharmacyRegistrationForm.controls.businessName.enable()
+          this.pharmacyRegistrationForm.controls.pharmacyEmail.enable()
         } else {
           this.pharmacyRegistrationForm.controls.pharmacyCUIT.setErrors({'incorrect': true});
           this.pharmacyRegistrationForm.controls.companyName.disable()
           this.pharmacyRegistrationForm.controls.businessName.disable()
+          this.pharmacyRegistrationForm.controls.pharmacyEmail.disable()
         }
       })
     }    
@@ -104,16 +125,16 @@ export class RegistrationComponent implements OnInit {
       lastName: this.doctorRegistrationForm.controls.doctorLastName.value,
       medicalLicense: this.doctorRegistrationForm.controls.doctorMedicalLicense.value,
       Status: 'En evaluación',
-      email: 'jorge.valbuenavargas@davinci.edu.ar',
+      email: this.doctorRegistrationForm.controls.doctorEmail.value,
       creationDate: new Date(),
-      GmailID: Guid.create().toString(),
-      FacebookID: Guid.create().toString(),
+      GmailID: this.gmailId,
+      FacebookID: '',
     }
     this.doctorService.addNewDoctor(newDoctor).subscribe(data => {
-      this.loggedProfile = 'Doctor',
+      /*this.loggedProfile = 'Doctor',
       this.appComponent.profile = this.loggedProfile
       this.appComponent.loggedId = newDoctor.id
-      this.appComponent.userEmail = newDoctor.email
+      this.appComponent.userEmail = newDoctor.email*/
       this.saveNewSecurityCode(newDoctor.id, newDoctor.email)
     })
   }
@@ -145,7 +166,12 @@ export class RegistrationComponent implements OnInit {
     }
     this.doctorService.addNewUIC(newUIC).subscribe(data => {
       //console.log("Done")
-      this.router.navigate(['/securitycode'])
+      this.createAlertMessage("Su usuario ha sido creado con éxito, en un periodo máximo de 48 horas validaremos su licencia médica y habilitaremos su acceso a la aplicación. En breve será redireccionado al Inicio de sesión.", "success")      
+      this.selectedProfile = ''
+      setTimeout( () => { 
+        this.angularFireAuth.signOut();
+        this.router.navigate(['/login'])
+        }, 1000);      
     });    
   }
 
@@ -157,10 +183,10 @@ export class RegistrationComponent implements OnInit {
       business_name: this.pharmacyRegistrationForm.controls.businessName.value,
       cuit: this.pharmacyRegistrationForm.controls.pharmacyCUIT.value,
       Status: 'Activo',
-      email: 'jorge.valbuenavargas@davinci.edu.ar',
+      email: this.pharmacyRegistrationForm.controls.pharmacyEmail.value,
       creationDate: new Date(),
-      GmailID: Guid.create().toString(),
-      FacebookID: Guid.create().toString(),
+      GmailID: this.gmailId,
+      FacebookID: '',
     }
     this.pharmacyService.addNewPharmacy(newPharmacy).subscribe(data => {
       this.loggedProfile = 'Farmacia',
@@ -174,11 +200,11 @@ export class RegistrationComponent implements OnInit {
   onAdminSubmit(){
     const newAdmin = {
       id: Guid.create().toString(),
-      name: this.adminRegistrationForm.controls.doctorName.value,
-      lastName: this.adminRegistrationForm.controls.doctorLastName.value,
-      email: 'jorge.valbuenavargas@davinci.edu.ar',
-      GmailID: Guid.create().toString(),
-      FacebookID: Guid.create().toString(),
+      name: this.adminRegistrationForm.controls.adminName.value,
+      lastName: this.adminRegistrationForm.controls.adminLastName.value,
+      email: this.adminRegistrationForm.controls.adminEmail.value,
+      GmailID: this.gmailId,
+      FacebookID: '',
     }
     this.adminService.addNewAdmin(newAdmin).subscribe(data => {
       this.loggedProfile = 'Admin',
@@ -191,7 +217,24 @@ export class RegistrationComponent implements OnInit {
   
   showForm(){
     this.selectedProfile = this.registrationForm.controls.user.value
+    //console.log(this.gmailId)
     //console.log(this.selectedProfile)
+  }
+
+  createAlertMessage(alertMessage : string, alertType : string){
+    this.newAlertElement = document.createElement("div");
+    this.newAlertElement.innerHTML = '<div class="alert alert-'+alertType+' alert-dismissible fade show" role="alert" data-auto-dismiss="2000">' + 
+    alertMessage + 
+    '<button id="closeButton" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    this.titleContainer.nativeElement.appendChild(this.newAlertElement);
+    this.closeAlertMessage();
+  }
+
+  closeAlertMessage() {
+    setTimeout( () => { 
+      let closeButton : HTMLElement = document.getElementById("closeButton") as HTMLElement;
+      closeButton.click();
+      }, 1000);
   }
 
 }

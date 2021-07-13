@@ -46,4 +46,4 @@ testem.log
 Thumbs.db
 "sendgrid.env" 
 "sendgrid.env" 
-/environments
+/src/assets/environments
