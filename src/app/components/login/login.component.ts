@@ -32,6 +32,10 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.appComponent.loggedId = '';
+    this.appComponent.profile = '';
+    this.appComponent.userEmail = '';
+    this.selectedProfile = this.registrationForm.controls.user.value
     this.angularFireAuth.authState.subscribe(d => {
       if (d !== null) {
         if (this.selectedProfile == 'Doctor'){
@@ -42,6 +46,9 @@ export class LoginComponent implements OnInit {
           this.findAdmin(d!.uid)
         } else {
           this.angularFireAuth.signOut();
+          this.appComponent.loggedId = '';
+          this.appComponent.profile = '';
+          this.appComponent.userEmail = '';
         }
       }          
     });
@@ -51,6 +58,22 @@ export class LoginComponent implements OnInit {
     if (this.registrationForm.controls.user.value != 'Seleccione...')
     {
       this.selectedProfile = this.registrationForm.controls.user.value  
+      this.angularFireAuth.authState.subscribe(d => {
+        if (d !== null) {
+          if (this.selectedProfile == 'Doctor'){
+            this.findDoctor(d!.uid)
+          }else if (this.selectedProfile == 'Farmacia') {
+            this.findPharmacy(d!.uid)
+          }else if (this.selectedProfile == 'Admin') {
+            this.findAdmin(d!.uid)
+          } else {
+            this.angularFireAuth.signOut();
+            this.appComponent.loggedId = '';
+            this.appComponent.profile = '';
+            this.appComponent.userEmail = '';
+          }
+        }          
+      });
     } else {
       this.selectedProfile = ''
     }

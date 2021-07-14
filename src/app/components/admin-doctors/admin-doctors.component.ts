@@ -171,7 +171,7 @@ export class AdminDoctorsComponent implements OnInit {
       this.doctorService.getDoctorById(filteredDoctorId).subscribe(doctorData => {
         let foundDoctor : DoctorI = doctorData;
         //console.log(foundDoctor.email)
-        this.doctorService.sendNotificationSecurityCodeById(createdSecurityCode.id!, foundDoctor.email).subscribe(data => console.log(data)) 
+        this.doctorService.sendNotificationSecurityCodeById(createdSecurityCode.id!, foundDoctor.email).subscribe(data => data) 
       })
     })
   }
@@ -185,7 +185,7 @@ export class AdminDoctorsComponent implements OnInit {
           obtainedSecurityCodesByDoctor.sort((a,b) => (a.expirationDate > b.expirationDate) ? 1 : ((b.expirationDate > a.expirationDate) ? -1 : 0))
           //console.log(obtainedSecurityCodesByDoctor[obtainedSecurityCodesByDoctor.length-1].expirationDate)
           let securityCode : SecurityCodeI = obtainedSecurityCodesByDoctor[obtainedSecurityCodesByDoctor.length-1]
-          this.doctorService.sendNotificationSecurityCodeById(securityCode.id!, doctor.email).subscribe(data => console.log(data)) 
+          this.doctorService.sendNotificationSecurityCodeById(securityCode.id!, doctor.email).subscribe(data => data) 
         });  
       }
       this.createAlertMessage("Proceso de notificación de Códigos de seguridad finalizado con éxito", "success")
@@ -201,7 +201,7 @@ export class AdminDoctorsComponent implements OnInit {
           let obtainedUniqueIdentifierCodesByDoctor : UniqueIdentifierCodeI[] = data;
           let filteredUniqueIdentifierCodesByDoctor : UniqueIdentifierCodeI[] = obtainedUniqueIdentifierCodesByDoctor.filter(uniquecode => uniquecode.status == 'Pendiente')
           if (filteredUniqueIdentifierCodesByDoctor.length > 0) {
-            this.doctorService.sendNotificationPendingUIC(doctor.id!, doctor.email).subscribe(data => console.log(data))
+            this.doctorService.sendNotificationPendingUIC(doctor.id!, doctor.email).subscribe(data => data)
           }
         })
       }

@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/e77dd3b0-30d5-42a7-b667-43d9f679e579/resourceGroups/MedicalQRWebApp/providers/Microsoft.Web/sites/MedicalQRAngular",
+    "appService.deploySubpath": "."
+}

@@ -234,7 +234,7 @@ export class RegistrationComponent implements OnInit {
     setTimeout( () => { 
       let closeButton : HTMLElement = document.getElementById("closeButton") as HTMLElement;
       closeButton.click();
-      }, 1000);
+      }, 10000);
   }
 
 }
