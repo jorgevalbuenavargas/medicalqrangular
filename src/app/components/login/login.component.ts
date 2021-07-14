@@ -32,23 +32,32 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.angularFireAuth.signOut();
     this.appComponent.loggedId = '';
     this.appComponent.profile = '';
     this.appComponent.userEmail = '';
     this.selectedProfile = this.registrationForm.controls.user.value
+    console.log(this.appComponent.loggedId)
     this.angularFireAuth.authState.subscribe(d => {
+      this.angularFireAuth.signOut();
+      console.log("Subscribe Auth " + this.selectedProfile)
       if (d !== null) {
-        if (this.selectedProfile == 'Doctor'){
+        //this.selectedProfile = this.registrationForm.controls.user.value
+        if (this.selectedProfile === 'Doctor'){
+          console.log("Doctor " + this.selectedProfile)
           this.findDoctor(d!.uid)
-        }else if (this.selectedProfile == 'Farmacia') {
+        }else if (this.selectedProfile === 'Farmacia') {
+          console.log("Farmacia " + this.selectedProfile)
           this.findPharmacy(d!.uid)
-        }else if (this.selectedProfile == 'Admin') {
+        }else if (this.selectedProfile === 'Admin') {
+          console.log("Admin " + this.selectedProfile)
           this.findAdmin(d!.uid)
         } else {
           this.angularFireAuth.signOut();
           this.appComponent.loggedId = '';
           this.appComponent.profile = '';
           this.appComponent.userEmail = '';
+          this.selectedProfile = ''
         }
       }          
     });
@@ -57,8 +66,9 @@ export class LoginComponent implements OnInit {
   showForm(){
     if (this.registrationForm.controls.user.value != 'Seleccione...')
     {
+      console.log(this.registrationForm.controls.user.value)
       this.selectedProfile = this.registrationForm.controls.user.value  
-      this.angularFireAuth.authState.subscribe(d => {
+      /*this.angularFireAuth.authState.subscribe(d => {
         if (d !== null) {
           if (this.selectedProfile == 'Doctor'){
             this.findDoctor(d!.uid)
@@ -73,13 +83,14 @@ export class LoginComponent implements OnInit {
             this.appComponent.userEmail = '';
           }
         }          
-      });
+      });*/
     } else {
       this.selectedProfile = ''
     }
   }
 
   findDoctor(providerId : string) {
+    console.log("Find Doctor")
     this.doctorService.getDoctorByProvider(providerId).subscribe(doctorData => {
       let foundDoctors : DoctorI[] = doctorData;
       if (foundDoctors.length !== 0) {        
@@ -106,6 +117,7 @@ export class LoginComponent implements OnInit {
   }
 
   findAdmin(providerId : string) {
+    console.log("Find Admin")
     this.adminService.getAdminByProvider(providerId).subscribe(adminData => {
       let foundAdmins : AdminI[] = adminData;
       if (foundAdmins.length !== 0) {
@@ -124,6 +136,7 @@ export class LoginComponent implements OnInit {
   }
 
   findPharmacy(providerId : string) {
+    console.log("Find Farmacia")
     this.pharmacyService.getPharmacyByProvider(providerId).subscribe(pharmacyData => {
       let foundPharmacies : PharmacyI[] = pharmacyData;
       if (foundPharmacies.length !== 0) {

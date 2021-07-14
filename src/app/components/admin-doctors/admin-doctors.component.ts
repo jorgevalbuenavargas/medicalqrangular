@@ -158,10 +158,13 @@ export class AdminDoctorsComponent implements OnInit {
   }
 
   saveNewSecurityCode(filteredDoctorId : string){
+    const today = new Date()
+    const expirationDate = new Date()
     const newSecurityCode = { 
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * (999999 - 100000 + 1) + 100000).toString()),
-      expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
+      //expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
+      expirationDate: new Date(expirationDate.setDate(today.getDate() + 30)),
       doctorId: filteredDoctorId,
       creationDate: new Date()
     }   

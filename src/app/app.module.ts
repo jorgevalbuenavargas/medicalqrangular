@@ -31,7 +31,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
   signInFlow: 'popup',
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    /*{
+    {
       scopes: [
         'public_profile',
         'email',
@@ -42,7 +42,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
         'auth_type': 'reauthenticate'
       },
       provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID
-    },*/
+    },
     //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
     //firebase.auth.GithubAuthProvider.PROVIDER_ID,
     /*{

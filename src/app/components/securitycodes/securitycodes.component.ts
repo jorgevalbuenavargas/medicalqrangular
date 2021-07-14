@@ -53,20 +53,23 @@ export class SecuritycodesComponent implements OnInit {
     this.doctorService.getAllSecurityCodesByDoctor(this.loggedDoctorId).subscribe(data => {
       this.obtainedSecurityCodesByDoctor = data;
       if (this.obtainedSecurityCodesByDoctor.length > 0) {
-        this.obtainedSecurityCodesByDoctor.sort((a,b) => (a.expirationDate > b.expirationDate) ? 1 : ((b.expirationDate > a.expirationDate) ? -1 : 0))
+        this.obtainedSecurityCodesByDoctor.sort((a,b) => (new Date(a.expirationDate) > new Date(b.expirationDate)) ? 1 : ((new Date(b.expirationDate) > new Date(a.expirationDate)) ? -1 : 0))
         //console.log(this.obtainedSecurityCodesByDoctor[this.obtainedSecurityCodesByDoctor.length-1].expirationDate)
         this.securityCode = this.obtainedSecurityCodesByDoctor[this.obtainedSecurityCodesByDoctor.length-1]
         this.securityCodeNumber = this.obtainedSecurityCodesByDoctor[this.obtainedSecurityCodesByDoctor.length-1].securityNumber
-        this.securityCodeCreationDate = this.obtainedSecurityCodesByDoctor[this.obtainedSecurityCodesByDoctor.length-1].expirationDate 
+        this.securityCodeCreationDate = new Date(this.obtainedSecurityCodesByDoctor[this.obtainedSecurityCodesByDoctor.length-1].expirationDate)
       }      
     });     
   }
 
   saveNewSecurityCode(){
+    const today = new Date()
+    const expirationDate = new Date()
     const newSecurityCode = {
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * 999999)).toString(),
-      expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
+      //expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
+      expirationDate: new Date(expirationDate.setDate(today.getDate() + 30)),
       doctorId: this.loggedDoctorId,
       creationDate: new Date()
     }
@@ -74,14 +77,15 @@ export class SecuritycodesComponent implements OnInit {
       let createdSecurityCode : SecurityCodeI = data;
       this.doctorService.sendNotificationSecurityCodeById(createdSecurityCode.id!, this.loggedDoctorEmail).subscribe(data => {
         this.createAlertMessage("Código de seguridad generado con éxito")})
-        if (this.securityCode != null) {
+        /*if (this.securityCode != null) {
           this.securityCode.expirationDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
           this.doctorService.updateSecurityCode(this.securityCode, this.securityCode.id!).subscribe(modifiedSecurityCodeData => {
             this.securityCode = data;                
           })        
-        }
+        }*/
       this.securityCode = createdSecurityCode;
       this.securityCodeNumber = this.securityCode.securityNumber;
+      this.securityCodeCreationDate = new Date(this.securityCode.expirationDate)
       })            
   }
 }
