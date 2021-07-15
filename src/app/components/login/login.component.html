@@ -10,7 +10,7 @@
 
 <div class="container mt-4" #alertContainer></div>
 
-<div class="container" *ngIf="appComponent.loggedId == ''">
+<!--<div class="container" *ngIf="appComponent.loggedId == ''">
     <div class="col-12 p-4">
         <h4 class="text-center">Inicio de sesión</h4>
         <form [formGroup]="registrationForm" class="row g-3 mt-4 justify-content-center">
@@ -26,9 +26,11 @@
         </form>
     </div>
 </div>
-<!--<div class="container mt-4" *ngIf="selectedProfile !== ''">
+<div class="container mt-4" *ngIf="selectedProfile !== ''">
     <firebase-ui></firebase-ui>
 </div>-->
-<firebase-ui></firebase-ui>
+<div class="container mt-4">
+    <firebase-ui></firebase-ui>
+</div>
 
 
