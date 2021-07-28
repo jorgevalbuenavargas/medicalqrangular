@@ -26,6 +26,11 @@ import {firebase, firebaseui, FirebaseUIModule} from 'firebaseui-angular';
 import {AngularFireModule} from '@angular/fire';
 import {AngularFireAuthModule, USE_EMULATOR as USE_AUTH_EMULATOR} from '@angular/fire/auth';
 import {environment} from '../assets/environments/environment';
+import { NgxMaskModule, IConfig } from 'ngx-mask'
+
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 
 const firebaseUiAuthConfig: firebaseui.auth.Config = {
   signInFlow: 'popup',
@@ -61,6 +66,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
   ],
   imports: [
     BrowserModule,
+    NgxMaskModule.forRoot(maskConfig),
     AppRoutingModule,
     HttpClientModule,
     QRCodeModule,
@@ -69,7 +75,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     NgxBootstrapIconsModule.pick(allIcons),
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
-    FirebaseUIModule.forRoot(firebaseUiAuthConfig)
+    FirebaseUIModule.forRoot(firebaseUiAuthConfig)    
   ],
   providers: [],
   bootstrap: [AppComponent]

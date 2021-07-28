@@ -50,7 +50,7 @@ export class RegistrationComponent implements OnInit {
     companyName: new FormControl({value: '', disabled: true}, Validators.required),
     businessName: new FormControl({value: '', disabled: true}, Validators.required),
     pharmacyEmail: new FormControl({value: '', disabled: true}, [ Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]),
-    pharmacyCUIT: new FormControl(''),
+    pharmacyCUIT: new FormControl({value: '', disabled: false}, [ Validators.pattern("^[0-9]*$")]),
   });
 
   adminRegistrationForm = new FormGroup({
@@ -93,29 +93,68 @@ export class RegistrationComponent implements OnInit {
     }    
   }
 
-  onCUITChange(){
+  onCUITChange(){    
     if (this.pharmacyRegistrationForm.controls.pharmacyCUIT.value.length >= 11) {
-      this.validCUIT = true
-      this.pharmacyService.getAllPharmacies().subscribe(pharmaciesData => {
-        let allPharmacies : PharmacyI[] = pharmaciesData
-        for (let pharmacy of allPharmacies) {
-          if (pharmacy.cuit == this.pharmacyRegistrationForm.controls.pharmacyCUIT.value){
-            this.validCUIT = false;
-            break;
-          }      
-        }        
-        if (this.validCUIT) {
-          this.pharmacyRegistrationForm.controls.companyName.enable()
-          this.pharmacyRegistrationForm.controls.businessName.enable()
-          this.pharmacyRegistrationForm.controls.pharmacyEmail.enable()
-        } else {
+      let principio = this.pharmacyRegistrationForm.controls.pharmacyCUIT.value[0] + this.pharmacyRegistrationForm.controls.pharmacyCUIT.value[1]      
+      this.validCUIT = true;
+      if (principio == '30') {
+        if (this.calculateCUIT(this.pharmacyRegistrationForm.controls.pharmacyCUIT.value)) {
+          this.pharmacyService.getAllPharmacies().subscribe(pharmaciesData => {
+            let allPharmacies : PharmacyI[] = pharmaciesData
+            for (let pharmacy of allPharmacies) {
+              if (pharmacy.cuit == this.pharmacyRegistrationForm.controls.pharmacyCUIT.value){
+                this.validCUIT = false;
+                break;
+              }      
+            }        
+            if (this.validCUIT) {
+              this.pharmacyRegistrationForm.controls.companyName.enable()
+              this.pharmacyRegistrationForm.controls.businessName.enable()
+              this.pharmacyRegistrationForm.controls.pharmacyEmail.enable()
+            } else {
+              this.validCUIT = false;
+              this.pharmacyRegistrationForm.controls.pharmacyCUIT.setErrors({'incorrect': true});
+              this.pharmacyRegistrationForm.controls.companyName.disable()
+              this.pharmacyRegistrationForm.controls.businessName.disable()
+              this.pharmacyRegistrationForm.controls.pharmacyEmail.disable()
+            }
+          })
+        }  else {
+          this.validCUIT = false;
           this.pharmacyRegistrationForm.controls.pharmacyCUIT.setErrors({'incorrect': true});
           this.pharmacyRegistrationForm.controls.companyName.disable()
           this.pharmacyRegistrationForm.controls.businessName.disable()
           this.pharmacyRegistrationForm.controls.pharmacyEmail.disable()
-        }
-      })
+        }      
+      } else {
+        this.validCUIT = false;
+        this.pharmacyRegistrationForm.controls.pharmacyCUIT.setErrors({'incorrect': true});
+        this.pharmacyRegistrationForm.controls.companyName.disable()
+        this.pharmacyRegistrationForm.controls.businessName.disable()
+        this.pharmacyRegistrationForm.controls.pharmacyEmail.disable()
+      }   
+      
     }    
+  }
+
+  calculateCUIT(cuit : string){
+    //let cuit = "30710316097"
+    let base = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
+    let aux = 0
+    let validDigit = 0
+    for (let i = 0; i < base.length; i++) {
+      aux += parseInt(cuit[i]) * base[i]
+    }    
+    if ((aux % 11) == 0){  
+      validDigit = 0    
+    } else {
+      validDigit = (11 - Math.round((aux % 11)))
+    }
+    if (validDigit == parseInt(cuit[10])){
+      return true
+    } else {
+      return false
+    }
   }
 
   onSubmit(){
@@ -126,7 +165,7 @@ export class RegistrationComponent implements OnInit {
       medicalLicense: this.doctorRegistrationForm.controls.doctorMedicalLicense.value,
       Status: 'En evaluación',
       email: this.doctorRegistrationForm.controls.doctorEmail.value,
-      creationDate: new Date(),
+      creationDate: this.defineNewDate(new Date()),
       GmailID: this.gmailId,
       FacebookID: '',
     }
@@ -145,7 +184,7 @@ export class RegistrationComponent implements OnInit {
       securityNumber: (Math.floor(Math.random() * 999999)).toString(),
       expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
       doctorId: receivedDoctorId,
-      creationDate: new Date()
+      creationDate: this.defineNewDate(new Date())
     }
     this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(data => {      
       let createdSecurityCode : SecurityCodeI = data;
@@ -160,9 +199,9 @@ export class RegistrationComponent implements OnInit {
     const newUIC = {
       id: Guid.create().toString(),
       status: "Pendiente",
-      creationDate: new Date(),
+      creationDate: this.defineNewDate(new Date()),
       doctorId: receivedDoctorId,
-      modificationDate: new Date()
+      modificationDate: this.defineNewDate(new Date())
     }
     this.doctorService.addNewUIC(newUIC).subscribe(data => {
       //console.log("Done")
@@ -184,7 +223,7 @@ export class RegistrationComponent implements OnInit {
       cuit: this.pharmacyRegistrationForm.controls.pharmacyCUIT.value,
       Status: 'Activo',
       email: this.pharmacyRegistrationForm.controls.pharmacyEmail.value,
-      creationDate: new Date(),
+      creationDate: this.defineNewDate(new Date()),
       GmailID: this.gmailId,
       FacebookID: '',
     }
@@ -235,6 +274,10 @@ export class RegistrationComponent implements OnInit {
       let closeButton : HTMLElement = document.getElementById("closeButton") as HTMLElement;
       closeButton.click();
       }, 10000);
+  }
+
+  defineNewDate(date : Date) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()))
   }
 
 }

@@ -7,11 +7,11 @@
 <div class="container mt-4" #alertContainer></div>
 
 <div class="container" *ngIf="loggedProfile == 'Admin'">
-    <div class="container p-4">
+    <!--<div class="container p-4">
         <form #filterDates="ngForm" (ngSubmit)="submit(filterDates)" class="row g-3">
             <div class="col-auto">
               <label for="fromDate" class="form-label">Fecha Desde:</label>
-              <input type="date" name="fromDate" class="form-control" required value="01/01/1900" ngModel>
+              <input type="date" name="fromDate" class="form-control" required value='{{this.lastMonth}}' ngModel>
             </div>
             <div class="col-auto">
               <label for="toDate" class="form-label">Fecha Hasta:</label>
@@ -19,6 +19,41 @@
             </div>
             <div class="col-auto d-grid gap-2">
                 <button type="submit" class="btn btn-primary btn-lg"><h4>Filtrar</h4></button>
+            </div>
+        </form>
+    </div>-->
+    <div class="container p-4">
+        <form [formGroup]="filtersForm" (ngSubmit)="onSubmit()" class="row g-3">
+            <div class="col-auto">
+                <label for="fromDate" class="form-label">Fecha Desde:</label>
+                <input id="fromDate" type="date" name="fromDate" class="form-control" formControlName="fromDate" >
+            </div>
+            <div class="col-auto">
+                <label for="toDate" class="form-label">Fecha Hasta:</label>
+                <input id="toDate" type="date" name="toDate" class="form-control" formControlName="toDate" >
+            </div>
+            <div class="col-auto">
+                <label for="state" class="form-label">Estado:</label>
+                <select id="state" class="form-control" formControlName="state">
+                    <option value="Todos">Todos</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>                    
+                </select>
+            </div>   
+            <div class="col-auto">
+                <label for="pharmacyCUIT" class="form-label">CUIT:</label>
+                <input id="pharmacyCUIT" type="text" maxlength="13" mask="00-00000000-0" class="form-control" formControlName="pharmacyCUIT">
+            </div>  
+            <div class="col-auto" >
+                <label for="companyName" class="form-label">Razón Social:</label>
+                <input id="companyName" type="text" class="form-control" formControlName="companyName">
+            </div>
+            <div class="col-auto">
+                <label for="businessName" class="form-label">Nombre de fantasía:</label>
+                <input id="businessName" type="text" class="form-control" formControlName="businessName">
+            </div>               
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mg-2">
+                <button type="submit" class="btn btn-primary"><h4>Filtrar</h4></button>                
             </div>
         </form>
     </div>
@@ -52,7 +87,7 @@
                             <td>{{ obtainedPharmacy.id }}</td>
                             <td>{{ obtainedPharmacy.company_name }}</td>
                             <td>{{ obtainedPharmacy.business_name }}</td>
-                            <td>{{ obtainedPharmacy.cuit }}</td>
+                            <td>{{ obtainedPharmacy.cuit.slice(0, 2)  + "-" + obtainedPharmacy.cuit.slice(2, 10) + "-" + obtainedPharmacy.cuit.slice(10, 11) }}</td>
                             <td>{{ obtainedPharmacy.creationDate | date : "dd/MM/yyyy" }}</td>
                             <td>{{ obtainedPharmacy.Status }}</td>
                             <td>

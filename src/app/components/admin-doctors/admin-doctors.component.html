@@ -7,7 +7,7 @@
 <div class="container mt-4" #alertContainer></div>
 
 <div class="container" *ngIf="loggedProfile == 'Admin'">
-    <div class="container p-4">
+    <!--<div class="container p-4">
         <form #filterDates="ngForm" (ngSubmit)="submit(filterDates)" class="row g-3">
             <div class="col-auto">
               <label for="fromDate" class="form-label">Fecha Desde:</label>
@@ -19,6 +19,42 @@
             </div>
             <div class="col-auto d-grid gap-2">
                 <button type="submit" class="btn btn-primary btn-lg"><h4>Filtrar</h4></button>
+            </div>
+        </form>
+    </div>-->
+    <div class="container p-4">
+        <form [formGroup]="filtersForm" (ngSubmit)="onSubmit()" class="row g-3">
+            <div class="col-auto">
+                <label for="fromDate" class="form-label">Fecha Desde:</label>
+                <input id="fromDate" type="date" name="fromDate" class="form-control" formControlName="fromDate" >
+            </div>
+            <div class="col-auto">
+                <label for="toDate" class="form-label">Fecha Hasta:</label>
+                <input id="toDate" type="date" name="toDate" class="form-control" formControlName="toDate" >
+            </div>
+            <div class="col-auto">
+                <label for="state" class="form-label">Estado:</label>
+                <select id="state" class="form-control" formControlName="state">
+                    <option value="Todos">Todos</option>
+                    <option value="En evaluación">En evaluación</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>                    
+                </select>
+            </div>   
+            <div class="col-auto">
+                <label for="doctorMedicalLicense" class="form-label">Licencia Médica:</label>
+                <input id="doctorMedicalLicense" type="text" class="form-control" formControlName="doctorMedicalLicense">
+            </div>  
+            <div class="col-auto" >
+                <label for="doctorLastName" class="form-label">Apellido:</label>
+                <input id="doctorLastName" type="text" class="form-control" formControlName="doctorLastName">
+            </div>
+            <div class="col-auto">
+                <label for="doctorName" class="form-label">Nombre:</label>
+                <input id="doctorName" type="text" class="form-control" formControlName="doctorName">
+            </div>               
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mg-2">
+                <button type="submit" class="btn btn-primary"><h4>Filtrar</h4></button>                
             </div>
         </form>
     </div>

@@ -32,8 +32,20 @@ export class AdminDoctorsComponent implements OnInit {
     doctorMedicalLicense: new FormControl(''),
   });
   validMedicalLicense = true;
+  lastMonth = new Date().getFullYear() + "-" + this.getRealMonth(new Date(new Date().setMonth(new Date().getMonth() - 1)).getMonth()) + "-" + new Date().getDate()
+  today = new Date().getFullYear() + "-" + this.getRealMonth(new Date().getMonth()) + "-" + new Date().getDate()
 
   constructor(private doctorService : DoctorDataService, private appComponent : AppComponent) { }
+
+  filtersForm = new FormGroup({
+    fromDate: new FormControl({value: this.lastMonth, disabled: false}),
+    toDate: new FormControl({value: this.today, disabled: false}),
+    state: new FormControl({value: '', disabled: false}),
+    doctorMedicalLicense: new FormControl({value: '', disabled: false}),
+    doctorLastName: new FormControl({value: '', disabled: false}),
+    doctorName: new FormControl({value: '', disabled: false})
+    
+  });
 
   ngOnInit(): void {
     this.loggedProfile = this.appComponent.profile;
@@ -41,7 +53,113 @@ export class AdminDoctorsComponent implements OnInit {
     //this.getDoctors();
   }
 
-  submit(filterDates : any) {
+  getRealMonth(receivedMonth : number){
+    let month : string[] = [];
+    month[0] = "01";
+    month[1] = "02";
+    month[2] = "03";
+    month[3] = "04";
+    month[4] = "05";
+    month[5] = "06";
+    month[6] = "07";
+    month[7] = "08";
+    month[8] = "09";
+    month[9] = "10";
+    month[10] = "11";
+    month[11] = "12";
+    return month[receivedMonth]
+  }
+
+  onSubmit(){
+    //this.toDate = this.filtersForm.controls.toDate.value      
+    if (this.filtersForm.controls.fromDate.value.length > 0) {
+      this.fromDate = this.filtersForm.controls.fromDate.value;
+    } else {
+      this.fromDate = '2001-01-01'
+    }  
+    if (this.filtersForm.controls.toDate.value.length > 0) {
+      this.toDate = this.filtersForm.controls.toDate.value;
+    } else {
+      this.toDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1)).getFullYear() + '-12-31'
+    }
+    if (this.fromDate > this.toDate) {
+      this.createAlertMessage("La fecha desde no puede ser superior a la fecha hasta.", "danger")
+    } else {               
+      this.filterByDates(this.fromDate, this.toDate)
+    }  
+  }
+
+  filterByDates(fromDate: string, toDate: string) {
+    this.filteredobtainedDoctors = [];
+    this.selectedStatus = '';
+    this.doctorService.getAllDoctors().subscribe(data => { 
+      this.obtainedDoctors = data; 
+      const dateFrom = new Date(fromDate)
+      const dateTo = new Date(new Date(toDate).setDate(new Date(toDate).getDate() + 1))
+      dateTo.setSeconds(dateTo.getSeconds() - 1)
+      for (let doctor of this.obtainedDoctors) {
+        if (this.defineNewDate(new Date(doctor.creationDate)) >= dateFrom && this.defineNewDate(new Date(doctor.creationDate)) <= dateTo) { 
+          this.filteredobtainedDoctors.push(doctor)
+        }
+      }
+      if (this.filteredobtainedDoctors.length == 0) {
+        this.createAlertMessage("No se encontraron resultados para el rango de fechas indicado.", "danger")
+      }else {
+        if (this.filtersForm.controls.state.value.length > 0){          
+          if (this.filtersForm.controls.state.value == 'Activo' || this.filtersForm.controls.state.value == 'Inactivo' || this.filtersForm.controls.state.value == 'En evaluación') {
+            this.filterDoctorByState(this.filtersForm.controls.state.value)
+          }
+        }
+        if(this.filtersForm.controls.doctorMedicalLicense.value.length > 0) {
+          this.filterByPharmacyData("medicalLicense", this.filtersForm.controls.doctorMedicalLicense.value )
+        }
+        if(this.filtersForm.controls.doctorLastName.value.length > 0) {
+          this.filterByPharmacyData("lastName", this.filtersForm.controls.doctorLastName.value )
+        }
+        if(this.filtersForm.controls.doctorName.value.length > 0) {
+          this.filterByPharmacyData("name", this.filtersForm.controls.doctorName.value )
+        } 
+      }
+    });
+  }
+
+  filterDoctorByState(state : string) {
+    let temporalfilteredobtainedDoctors = this.filteredobtainedDoctors
+    this.filteredobtainedDoctors = [];
+    for (let doctor of temporalfilteredobtainedDoctors) {
+      if (doctor.Status == state) {
+        this.filteredobtainedDoctors.push(doctor)
+      }
+    }
+    if (this.filteredobtainedDoctors.length == 0) {
+      this.createAlertMessage("No se encontraron resultados para el estado " + state + ".", "danger")
+    }     
+  }
+
+  filterByPharmacyData(data: string, value : string) {
+    let temporalfilteredobtainedDoctors = this.filteredobtainedDoctors
+    this.filteredobtainedDoctors = [];
+    for (let doctor of temporalfilteredobtainedDoctors) {
+      if (data == 'medicalLicense') {
+        if (doctor.medicalLicense == value) {
+          this.filteredobtainedDoctors.push(doctor)
+        }
+      } else if (data == 'lastName'){
+        if (doctor.lastName.trim().toUpperCase().includes(value.trim().toUpperCase())) {
+          this.filteredobtainedDoctors.push(doctor)
+        }
+      } else {
+        if (doctor.name.trim().toUpperCase().includes(value.trim().toUpperCase())) {
+          this.filteredobtainedDoctors.push(doctor)
+        }
+      }      
+    }
+    if (this.filteredobtainedDoctors.length == 0) {
+      this.createAlertMessage("No se encontraron resultados a partir de los datos ingresados.", "danger")
+    }
+  }
+
+  /*submit(filterDates : any) {
     if (filterDates.form.controls.fromDate.value > filterDates.form.controls.toDate.value) {
       this.createAlertMessage("La fecha desde no puede ser superior a la fecha hasta.", "danger")
     } else {
@@ -49,7 +167,7 @@ export class AdminDoctorsComponent implements OnInit {
       this.toDate = filterDates.form.controls.toDate.value
       this.filterByDates(this.fromDate, this.toDate)
     }
-  }
+  }*/
 
   createAlertMessage(alertMessage : string, alertType : string){
     this.newAlertElement = document.createElement("div");
@@ -89,36 +207,14 @@ export class AdminDoctorsComponent implements OnInit {
   filterByState(selectedStatus: string) {
     this.filteredobtainedDoctors = this.obtainedDoctors.filter(doctor => doctor.Status == selectedStatus)
   }
-
-  filterByDates(fromDate: string, toDate: string) {
-    this.filteredobtainedDoctors = [];
-    this.selectedStatus = '';
-    this.doctorService.getAllDoctors().subscribe(data => { 
-      this.obtainedDoctors = data; 
-      for (let doctor of this.obtainedDoctors) {
-        if (new Date(doctor.creationDate) >= new Date(fromDate) && new Date(doctor.creationDate) <= new Date(toDate)) {
-          this.filteredobtainedDoctors.push(doctor)
-        }
-      }
-      if (this.filteredobtainedDoctors.length == 0) {
-        this.createAlertMessage("No se encontraron resultados para el rango de fechas indicado.", "danger")
-      }
-    });
-  }
   
-  /*name of the excel-file which will be downloaded. */ 
   fileName= 'DoctorsExcelSheet.xlsx';  
 
-  exportexcel(): void {
-    /* table id is passed over here */   
+  exportexcel(): void {  
     let element = document.getElementById('excel-table'); 
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-    /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-    /* save to file */
     XLSX.writeFile(wb, this.fileName);
         
   }
@@ -159,15 +255,14 @@ export class AdminDoctorsComponent implements OnInit {
 
   saveNewSecurityCode(filteredDoctorId : string){
     const today = new Date()
-    const expirationDate = new Date()
+    const expirationDate = this.defineNewDate(today)
     const newSecurityCode = { 
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * (999999 - 100000 + 1) + 100000).toString()),
-      //expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
       expirationDate: new Date(expirationDate.setDate(today.getDate() + 30)),
       doctorId: filteredDoctorId,
-      creationDate: new Date()
-    }   
+      creationDate: this.defineNewDate(today)
+    }    
     this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(securityCodeData => {
       let createdSecurityCode : SecurityCodeI = securityCodeData;
       //console.log(createdSecurityCode.id)
@@ -239,6 +334,10 @@ export class AdminDoctorsComponent implements OnInit {
         }
       })
     }    
+  }
+
+  defineNewDate(date : Date) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()))
   }
 
 }

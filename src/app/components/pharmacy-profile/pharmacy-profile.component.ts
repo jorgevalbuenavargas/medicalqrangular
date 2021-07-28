@@ -27,6 +27,8 @@ export class PharmacyProfileComponent implements OnInit {
   getPharmacyById() {
     this.pharmacyService.getPharmacyById(this.loggedPharmacyId).subscribe(data => {
       this.obtainedPharmacy = data;
+      let customedCuit = this.obtainedPharmacy.cuit.slice(0, 2) + "-" + this.obtainedPharmacy.cuit.slice(2, 10) + "-" + this.obtainedPharmacy.cuit.slice(10, 11)
+      this.obtainedPharmacy.cuit = customedCuit
     })
   }
 

@@ -78,9 +78,9 @@ export class UicComponent implements OnInit {
     this.newCreatedUIC = {
       id: Guid.create().toString(),
       status: "Pendiente",
-      creationDate: new Date(),
+      creationDate: this.defineNewDate(new Date()),
       doctorId: this.loggedDoctorId,
-      modificationDate: new Date()
+      modificationDate: this.defineNewDate(new Date())
     }
   }
 
@@ -104,7 +104,7 @@ export class UicComponent implements OnInit {
       status: receivedStatus,
       creationDate: receivedCeationDate,
       doctorId: receivedDoctorId,
-      modificationDate: new Date()
+      modificationDate: this.defineNewDate(new Date())
     }
     this.doctorService.updateUIC(actualUIC, receivedId).subscribe(data => {
       this.getUICByDoctorId(filteredStatus);
@@ -128,21 +128,19 @@ export class UicComponent implements OnInit {
     
   }
 
-  /*name of the excel-file which will be downloaded. */ 
   fileName= 'UICExcelSheet.xlsx';  
 
-  exportexcel(): void {
-    /* table id is passed over here */   
+  exportexcel(): void { 
     let element = document.getElementById('excel-table'); 
     const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
-
-    /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-    /* save to file */
     XLSX.writeFile(wb, this.fileName);
         
+  }
+
+  defineNewDate(date : Date) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()))
   }
 
 }

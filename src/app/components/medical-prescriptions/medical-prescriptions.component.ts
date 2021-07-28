@@ -9,6 +9,7 @@ import { UniqueIdentifierCodeI } from 'src/app/models/uic/uic.interface';
 import { AppComponent } from 'src/app/app.component';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PharmacyI } from 'src/app/models/pharmacy/pharmacy.interface';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-medical-prescriptions',
@@ -25,6 +26,7 @@ export class MedicalPrescriptionsComponent implements OnInit {
   doctorMedicalLicense = '';
   foundUIC!: UniqueIdentifierCodeI;
   @ViewChild('closeButton', { static: true }) selfClosingAlert : any;
+  
 
   medicalPrescriptionForm = new FormGroup({
     uic: new FormControl(''),
@@ -58,35 +60,58 @@ export class MedicalPrescriptionsComponent implements OnInit {
   }
 
   onSubmit() {
-    let oldestValidDate = new Date()
-    oldestValidDate.setDate(oldestValidDate.getDate() - 15);
+    var month = new Array();
+    month[0] = "01";
+    month[1] = "02";
+    month[2] = "03";
+    month[3] = "04";
+    month[4] = "05";
+    month[5] = "06";
+    month[6] = "07";
+    month[7] = "08";
+    month[8] = "09";
+    month[9] = "10";
+    month[10] = "11";
+    month[11] = "12";
+    let oldestValidDate = new Date(new Date().getFullYear() + "-" + month[new Date().getMonth()] + "-" + new Date().getDate())
+    oldestValidDate.setDate(oldestValidDate.getDate() - 30);
     let medicalPrescriptionDate = new Date(this.medicalPrescriptionForm.controls.expirationDate.value)  
+    medicalPrescriptionDate.setDate(medicalPrescriptionDate.getDate() + 1)
+    medicalPrescriptionDate.setSeconds(medicalPrescriptionDate.getSeconds() - 1)
     let typedSecurityCode  = this.medicalPrescriptionForm.controls.securityCode.value
-    let typedUIC = this.medicalPrescriptionForm.controls.uic.value
-    //let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1)
+    let typedUIC = this.medicalPrescriptionForm.controls.uic.value      
     if (medicalPrescriptionDate >= oldestValidDate){      
       this.doctorService.getUICById(typedUIC).subscribe(uicData => {
-        let validMedicalPrescription = false;        
-        this.doctorService.getAllSecurityCodesByDoctor(uicData.doctorId).subscribe(securityCodesData => {
-          for (let securityCode of securityCodesData) {
-            if (securityCode.securityNumber == typedSecurityCode) {
-              //console.log("Código de seguridad encontrado")
-              if (new Date(securityCode.expirationDate) >= medicalPrescriptionDate && new Date(securityCode.creationDate) <= medicalPrescriptionDate)  {
-                validMedicalPrescription = true;
-                break;
-              }
-            }        
-          }
-          if (validMedicalPrescription) {
-            let alertMessage = 'La prescripción médica es válida.'
-            this.createAlertMessage(alertMessage, 'success')
-            this.saveNewMedicalReceipt("Exitoso", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
-          } else {
-            let alertMessage = 'Alguno de los datos ingresados no es válido. La prescripción médica no es válida.'
-            this.createAlertMessage(alertMessage, 'danger')
-            this.saveNewMedicalReceipt("Fallido", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
-          }
-        })
+        if(uicData.status == 'Activo' || medicalPrescriptionDate < new Date(uicData.modificationDate)){
+          let validMedicalPrescription = false;        
+          this.doctorService.getAllSecurityCodesByDoctor(uicData.doctorId).subscribe(securityCodesData => {
+            for (let securityCode of securityCodesData) {
+              if (securityCode.securityNumber == typedSecurityCode) {
+                let securityCodeExpirationDate = this.defineNewDate(new Date(securityCode.expirationDate))
+                securityCodeExpirationDate.setDate(securityCodeExpirationDate.getDate() + 1)
+                securityCodeExpirationDate.setSeconds(securityCodeExpirationDate.getSeconds() - 1)
+                let securityCodeCreationDate = this.defineNewDate(new Date(securityCode.creationDate))
+                if (securityCodeExpirationDate >= medicalPrescriptionDate && securityCodeCreationDate <= medicalPrescriptionDate)  {
+                  validMedicalPrescription = true;
+                  break;
+                }
+              }        
+            }
+            if (validMedicalPrescription) {
+              let alertMessage = 'La prescripción médica es válida.'
+              this.createAlertMessage(alertMessage, 'success')
+              this.saveNewMedicalReceipt("Exitoso", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
+            } else {
+              let alertMessage = 'Alguno de los datos ingresados no es válido. La prescripción médica no es válida.'
+              this.createAlertMessage(alertMessage, 'danger')
+              this.saveNewMedicalReceipt("Fallido", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
+            }
+          })
+        }  else {         
+          let alertMessage = 'Alguno de los datos ingresados no es válido. La prescripción médica no es válida.'
+          this.createAlertMessage(alertMessage, 'danger')
+          this.saveNewMedicalReceipt("Fallido", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
+        }      
       },
       error => {        
           //console.error('There was an error!', error);
@@ -95,7 +120,7 @@ export class MedicalPrescriptionsComponent implements OnInit {
           this.createAlertMessage(alertMessage, 'danger')
       })
     } else {
-      let alertMessage = 'La fecha de la prescripción no se encuentra vigente. La prescripción médica no es válida.'
+      let alertMessage = 'La fecha de la prescripción es inferior a 15 días y no se encuentra vigente. La prescripción médica no es válida.'
       this.saveNewMedicalReceipt("Fallido", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
       this.createAlertMessage(alertMessage, 'danger')
     }
@@ -109,6 +134,9 @@ export class MedicalPrescriptionsComponent implements OnInit {
     this.doctorName = ''
     
   }
+
+
+
 
   createAlertMessage(alertMessage : string, alertType : string){
     this.newAlertElement = document.createElement("div");
@@ -130,7 +158,7 @@ export class MedicalPrescriptionsComponent implements OnInit {
   saveNewMedicalReceipt(result : string, pharmacy : string, uic : string, securityCode : string, message : string){
     const newMedicalReceipt = {
       id: Guid.create().toString(),
-      scanDate: new Date(),
+      scanDate: this.defineNewDate(new Date()),
       validationResult: result,
       pharmacyId: pharmacy,
       uicId: uic,
@@ -140,6 +168,10 @@ export class MedicalPrescriptionsComponent implements OnInit {
     this.pharmacyService.addNewMedicalReceipt(newMedicalReceipt).subscribe(data => {      
       let createdMedicalReceipt : MedicalReceiptI = data;
     })
+  }
+
+  defineNewDate(date : Date) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()))
   }
 
 }

@@ -8,12 +8,12 @@ import { Component } from '@angular/core';
 export class AppComponent {
 
   /*profile = 'Doctor';
-  loggedId = '5B121C69-9E01-477E-B16F-4DEA25048EEE';*/
+  loggedId = '40A09074-925A-A00F-823E-6768241FBFD5';*/
   /*profile = 'Farmacia';
   loggedId = 'B5FBFF70-DCB2-496F-9598-08B21A4CA020';*/
   /*profile = 'Admin';
-  loggedId = 'd9f1b06a-d6b1-ebc7-8a53-b4f5f7fb6f99';*/
-  //userEmail = 'jvalbuena@practia.global'
+  loggedId = '1777B4FC-1CEE-CDF2-F9A2-76C222491445';*/
+  //userEmail = ''
   profile = '';
   loggedId = '';
   userEmail = '';

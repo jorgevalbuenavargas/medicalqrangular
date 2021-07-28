@@ -64,14 +64,15 @@
         <form [formGroup]="pharmacyRegistrationForm" (ngSubmit)="onPharmacySubmit()" class="row g-3 mt-4" *ngIf="selectedProfile == 'Farmacia'">
             <div class="col-md-12">
                 <label for="pharmacyCUIT" class="form-label">CUIT:</label>
-                <input id="pharmacyCUIT" type="text" minlength="11" class="form-control" formControlName="pharmacyCUIT" required (change)='onCUITChange()'>
+                <input id="pharmacyCUIT" type="text" minlength="11" maxlength="13" mask="00-00000000-0" class="form-control" formControlName="pharmacyCUIT" required (change)='onCUITChange()'>
             </div>  
             <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.touched && pharmacyRegistrationForm.controls.pharmacyCUIT.invalid">
                 <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.errors?.required" class="alert alert-warning alert-dismissible fade show" role="alert">Indique un número de CUIT</div>                
                 <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.errors?.minlength" class="alert alert-warning alert-dismissible fade show" role="alert">El número de CUIT debe ser de al menos 11 caracteres</div>
+                <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.errors?.pattern" class="alert alert-warning alert-dismissible fade show" role="alert">El campo CUIT solo admite valores numéricos</div>
             </div>
             <div *ngIf="pharmacyRegistrationForm.controls.pharmacyCUIT.touched">
-                <div *ngIf="!validCUIT" class="alert alert-warning alert-dismissible fade show" role="alert">El número de CUIT ya se encuentra en uso.</div>                
+                <div *ngIf="!validCUIT" class="alert alert-warning alert-dismissible fade show" role="alert">El número de CUIT es inválido o ya se encuentra en uso.</div>                
             </div>
             <div class="col-md-12" >
                 <label for="companyName" class="form-label">Razón Social:</label>

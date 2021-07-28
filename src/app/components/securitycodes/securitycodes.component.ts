@@ -64,28 +64,27 @@ export class SecuritycodesComponent implements OnInit {
 
   saveNewSecurityCode(){
     const today = new Date()
-    const expirationDate = new Date()
+    const expirationDate = this.defineNewDate(today)
     const newSecurityCode = {
       id: Guid.create().toString(),
       securityNumber: (Math.floor(Math.random() * 999999)).toString(),
       //expirationDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 0),
       expirationDate: new Date(expirationDate.setDate(today.getDate() + 30)),
       doctorId: this.loggedDoctorId,
-      creationDate: new Date()
+      creationDate: this.defineNewDate(new Date())
     }
     this.doctorService.addNewSecurityCode(newSecurityCode).subscribe(data => {      
       let createdSecurityCode : SecurityCodeI = data;
       this.doctorService.sendNotificationSecurityCodeById(createdSecurityCode.id!, this.loggedDoctorEmail).subscribe(data => {
-        this.createAlertMessage("Código de seguridad generado con éxito")})
-        /*if (this.securityCode != null) {
-          this.securityCode.expirationDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-          this.doctorService.updateSecurityCode(this.securityCode, this.securityCode.id!).subscribe(modifiedSecurityCodeData => {
-            this.securityCode = data;                
-          })        
-        }*/
+        this.createAlertMessage("Código de seguridad generado con éxito")
+      })
       this.securityCode = createdSecurityCode;
       this.securityCodeNumber = this.securityCode.securityNumber;
-      this.securityCodeCreationDate = new Date(this.securityCode.expirationDate)
+      this.securityCodeCreationDate = this.defineNewDate(new Date(this.securityCode.expirationDate))
       })            
+  }
+
+  defineNewDate(date : Date) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()))
   }
 }
