@@ -84,9 +84,11 @@ export class MedicalPrescriptionsComponent implements OnInit {
       this.doctorService.getUICById(typedUIC).subscribe(uicData => {
         if(uicData.status == 'Activo' || medicalPrescriptionDate < new Date(uicData.modificationDate)){
           let validMedicalPrescription = false;        
+          let foundMedicalPrescription = false;
           this.doctorService.getAllSecurityCodesByDoctor(uicData.doctorId).subscribe(securityCodesData => {
             for (let securityCode of securityCodesData) {
               if (securityCode.securityNumber == typedSecurityCode) {
+                foundMedicalPrescription = true;
                 let securityCodeExpirationDate = this.defineNewDate(new Date(securityCode.expirationDate))
                 securityCodeExpirationDate.setDate(securityCodeExpirationDate.getDate() + 1)
                 securityCodeExpirationDate.setSeconds(securityCodeExpirationDate.getSeconds() - 1)
@@ -102,13 +104,18 @@ export class MedicalPrescriptionsComponent implements OnInit {
               this.createAlertMessage(alertMessage, 'success')
               this.saveNewMedicalReceipt("Exitoso", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
             } else {
-              let alertMessage = 'Alguno de los datos ingresados no es válido. La prescripción médica no es válida.'
+              let alertMessage = ""
+              if (foundMedicalPrescription){
+                alertMessage = 'El código de seguridad no se encuentra vigente. La prescripción médica no es válida.'  
+              } else {
+                alertMessage = 'El código de seguridad no fue encontrado. La prescripción médica no es válida.'   
+              }              
               this.createAlertMessage(alertMessage, 'danger')
               this.saveNewMedicalReceipt("Fallido", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
             }
           })
         }  else {         
-          let alertMessage = 'Alguno de los datos ingresados no es válido. La prescripción médica no es válida.'
+          let alertMessage = 'El código QR no se encuentra habilitado o fue deshabilitado antes de la fecha de generación de la prescripción médica. La prescripción médica no es válida.'
           this.createAlertMessage(alertMessage, 'danger')
           this.saveNewMedicalReceipt("Fallido", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
         }      
@@ -120,7 +127,7 @@ export class MedicalPrescriptionsComponent implements OnInit {
           this.createAlertMessage(alertMessage, 'danger')
       })
     } else {
-      let alertMessage = 'La fecha de la prescripción es inferior a 15 días y no se encuentra vigente. La prescripción médica no es válida.'
+      let alertMessage = 'La fecha de la prescripción es inferior a 30 días y no se encuentra vigente. La prescripción médica no es válida.'
       this.saveNewMedicalReceipt("Fallido", this.appComponent.loggedId, typedUIC, typedSecurityCode, alertMessage)
       this.createAlertMessage(alertMessage, 'danger')
     }

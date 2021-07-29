@@ -12,8 +12,8 @@ export class AppComponent {
   /*profile = 'Farmacia';
   loggedId = 'B5FBFF70-DCB2-496F-9598-08B21A4CA020';*/
   /*profile = 'Admin';
-  loggedId = '1777B4FC-1CEE-CDF2-F9A2-76C222491445';*/
-  //userEmail = ''
+  loggedId = '1777B4FC-1CEE-CDF2-F9A2-76C222491445';
+  userEmail = ''*/
   profile = '';
   loggedId = '';
   userEmail = '';
